@@ -5,7 +5,7 @@ from .models import Review, Product
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     #list_display = ('rating', 'user_id', 'product_id', 'comment')
-    list_display = ('rating', 'user_id', 'comment')
+    list_display = ('rating', 'user_id', 'product_id', 'comment')
 
 
 @admin.register(Product)

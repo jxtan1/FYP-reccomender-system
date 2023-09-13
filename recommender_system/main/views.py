@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+from .models import Product, Review
 
 # Create your views here.
 # In views.py
@@ -12,7 +13,8 @@ def is_admin(user):
 
 @login_required(login_url="/login")
 def home(request):
-    return render(request, 'main/home.html')
+    products = Product.objects.all()
+    return render(request, 'main/home.html', {"products": products})
 
 
 def sign_up(request):
