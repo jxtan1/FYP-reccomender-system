@@ -8,3 +8,10 @@ SELECT * FROM main_product;
 -- DELETE FROM main_product WHERE product_id > 100;
 
 -- SELECT * FROM main_product;
+
+
+
+
+-- INSERT DATA
+
+-- INSERT INTO db.sqlite3.main_product SELECT FROM databasename.table

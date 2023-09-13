@@ -13,3 +13,37 @@ The project has the following tasks:
 
 Team members -
 
+
+
+# How to Run
+
+# Windows
+
+ myworld\Scripts\activate.bat 
+
+ py -m pip install Django
+
+
+pip install crispy-bootstrap5
+# Mac
+
+ source macSource/myworld/bin/activate 
+
+ python3 -m pip install Django
+
+
+ pip3 install crispy-bootstrap5
+
+
+
+ # Note
+ (alan123)
+ ~Q}D:p.Gkm]pVa8
+
+
+ # Database
+
+ install sqlite extension
+
+right click db.sqlite3 to open database
+run query in sample.sql
