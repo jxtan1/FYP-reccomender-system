@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from .forms import RegisterForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 
@@ -21,3 +21,18 @@ def sign_up(request):
         form = RegisterForm()
 
     return render(request, 'registration/sign_up.html', {"form": form})
+
+@login_required(login_url="/login")
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            #product.productId = ProductForm.
+            product.save()
+            return redirect('/home')
+    else:
+        form = ProductForm()
+
+    return render(request, 'main/add_product.html', {"form": form})
+

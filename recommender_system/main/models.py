@@ -4,12 +4,13 @@ from django.contrib.auth.models import User
 
 
 class Product(models.Model):
-    productId = models.IntegerField()
+    product_id = models.AutoField(primary_key= True)
     name = models.CharField(max_length=200)
+    product_owner = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, to_field='id')
     description = models.TextField()
 
     def __str__(self):
-        return self.productId + '\n' + self.name + '\n' + self.description
+        return str(self.product_id) + '\n' + self.name + '\n' + self.description
 
 
 class Review(models.Model):
@@ -23,7 +24,6 @@ class Review(models.Model):
     ] 
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, default=1, to_field='product_id')
     comment = models.TextField()
 
-# need to migrate
