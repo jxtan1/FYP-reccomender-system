@@ -4,6 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
+# In views.py
+from django.contrib.auth.decorators import user_passes_test
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff  # Check if the user is authenticated and is a staff member (admin).
 
 @login_required(login_url="/login")
 def home(request):
@@ -23,6 +28,7 @@ def sign_up(request):
     return render(request, 'registration/sign_up.html', {"form": form})
 
 @login_required(login_url="/login")
+@user_passes_test(is_admin, login_url="/home")
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
