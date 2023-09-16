@@ -44,3 +44,17 @@ def add_product(request):
 
     return render(request, 'main/add_product.html', {"form": form})
 
+
+from django.shortcuts import render, get_object_or_404
+from .models import Product, Review
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    reviews = Review.objects.filter(product_id=product_id)
+    context = {
+        'product': product,
+        'reviews': reviews,
+    }
+    return render(request, 'main/product_detail.html', context)
+
+

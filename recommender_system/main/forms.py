@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Product, Review
+from .models import Product, Review, CustomUser
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required = True)
@@ -20,7 +20,7 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'name', 'gender', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'gender', 'email', 'password1', 'password2']
 
 
 
