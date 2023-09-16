@@ -1,31 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'main/base.html' %}
 
-    <title>Product Detail</title>
-</head>
-<body>
-    <div>
-        <h1>{{ product.name }}</h1>
-        <p>{{ product.description }}</p>
+{% block title %}Product Page{% endblock %}
+
+{% block content %}
+<!-- detail.html -->
+<h1>{{ product.name }}</h1>
+<p>Description: <br>{{ product.description }}</p>
+<p>Seller: {{ product.product_owner }}</p>
+
+<h2>Ratings and Reviews</h2>
+<ul>
+    {% for review in reviews %}
+    <div class="review" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
+        <div class="rating">
+            <strong>Rating:</strong> {{ review.rating }}
+        </div>
+        <div class="comment">
+            <strong>Comment:</strong> {{ review.comment }}
+        </div>
+        <div class="username">
+            <strong>Username:</strong> {{ review.user_id }}
+        </div>
+        <!-- You can add additional information from the review model here -->
     </div>
+    {% empty %}
+    <p> No review and rating yet :(</p>
+    {% endfor %}
+</ul>
 
-    <div>
-        <h2>Ratings and Reviews:</h2>
-        <ul>
-            {% for review in reviews %}
-            <li>
-                <p>Rating: {{ review.rating }}</p>
-                <p>Comment: {{ review.comment }}</p>
-                <p>By: {{ review.user_id.username }}</p>
-            </li>
-            {% empty %}
-            <li>No reviews available for this product.</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-
-
-</body>
-</html>
+{% endblock %}
