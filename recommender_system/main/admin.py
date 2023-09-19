@@ -10,7 +10,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_id', 'name', 'product_owner', 'description')
+    list_display = ('product_id', 'name', 'price', 'sold_count')
 
 
 @admin.register(CustomUser)

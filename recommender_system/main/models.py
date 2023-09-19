@@ -6,11 +6,12 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     product_id = models.AutoField(primary_key= True)
     name = models.CharField(max_length=200)
-    product_owner = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, to_field='id')
-    description = models.TextField()
+    price = models.CharField(max_length=200) # I need to set max_length
+    sold_count = models.IntegerField() #product_owner = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, to_field='id')
+    #description = models.TextField()
 
     def __str__(self):
-        return str(self.product_id) + '\n' + self.name + '\n' + self.description
+        return str(self.product_id) + '\n' + self.name + '\n' + self.price + '\n' + self.sold_count
 
 
 class Review(models.Model):
