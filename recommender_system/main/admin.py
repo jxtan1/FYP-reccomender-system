@@ -6,11 +6,14 @@ from .models import Review, Product, CustomUser, Reviewer
 class ReviewAdmin(admin.ModelAdmin):
     #list_display = ('rating', 'user_id', 'product_id', 'comment')
     list_display = ('product_name', 'rating', 'username', 'comment')
+    search_fields = ('product_name__name', 'rating', 'username__username', 'comment')
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('product_id', 'name', 'price', 'sold_count')
+    search_fields = ('name', 'price', 'sold_count')  # Add fields you want to search by
+
 
 
 @admin.register(CustomUser)

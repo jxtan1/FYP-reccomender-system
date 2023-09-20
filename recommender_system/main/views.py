@@ -50,7 +50,7 @@ from .models import Product, Review
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
-    reviews = Review.objects.filter(product_id=product_id)
+    reviews = Review.objects.filter(product_name=product)
     context = {
         'product': product,
         'reviews': reviews,
