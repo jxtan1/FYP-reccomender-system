@@ -3,6 +3,9 @@ from .forms import RegisterForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .models import Product, Reviewer, Review
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 
 # Create your views here.
 # In views.py
@@ -13,7 +16,15 @@ def is_admin(user):
 
 @login_required(login_url="/login")
 def home(request):
-    products = Product.objects.all()
+    all_products = Product.objects.order_by('product_id')
+    # Create a Paginator object with a specified number of products per page
+    paginator = Paginator(all_products, 50)  # Change 50 to the number of products per page you desire
+
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page')
+
+    # Get the products for the current page
+    products = paginator.get_page(page)
     return render(request, 'main/home.html', {"products": products})
 
 
@@ -55,16 +66,32 @@ def product_detail(request, product_id):
     return render(request, 'main/product_detail.html', context)
 
 
+# def search_products(request):
+#     query = request.GET.get('q')
+#     products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+    
+#     context = {
+#         'products': products,
+#     }
+    
+#     return render(request, 'main/home.html', context)
+
 def search_products(request):
     query = request.GET.get('q')
-    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
     
-    context = {
-        'products': products,
-    }
+    # Filter products based on the search query
+    products = Product.objects.filter(Q(name__icontains=query)).order_by('name')
     
-    return render(request, 'main/home.html', context)
+    # Create a Paginator object
+    paginator = Paginator(products, 50)  # Change 50 to the number of products per page you desire
 
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page')
+
+    # Get the Page object for the current page
+    products = paginator.get_page(page)
+
+    return render(request, 'main/home.html', {"products": products})
 
 
 from openpyxl import load_workbook
