@@ -71,6 +71,8 @@ from openpyxl import load_workbook
 import pandas as pd
 from django.db import IntegrityError
 
+@login_required(login_url="/login")
+@user_passes_test(is_admin, login_url="/home")
 def import_from_excel(request):
     if request.method == 'POST':
         excel_file = request.FILES['excel_file']
