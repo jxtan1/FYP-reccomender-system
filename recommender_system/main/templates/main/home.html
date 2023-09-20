@@ -10,11 +10,11 @@
                 <!--<img src="..." class="card-img-top" alt="..."> -->
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'product_detail' product.product_id %}">{{ product.name }}</a></h5>                    
-                    <p class="card-text">{{product.description}}</p>
+                    {% comment %} <p class="card-text">{{product.description}}</p> {% endcomment %}
                 </div>
-                <div class="card-footer">
+                {% comment %} <div class="card-footer">
                     <small class="text-body-secondary">{{product.product_owner}}</small>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
         {% empty %}

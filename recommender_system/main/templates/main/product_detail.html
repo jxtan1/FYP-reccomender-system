@@ -5,8 +5,8 @@
 {% block content %}
 <!-- detail.html -->
 <h1>{{ product.name }}</h1>
-<p>Description: <br>{{ product.description }}</p>
-<p>Seller: {{ product.product_owner }}</p>
+<p>Price: <br>{{ product.price }}</p>
+<p>Sold: {{ product.sold_count }}</p>
 
 <h2>Ratings and Reviews</h2>
 <ul>
@@ -19,7 +19,7 @@
             <strong>Comment:</strong> {{ review.comment }}
         </div>
         <div class="username">
-            <strong>Username:</strong> {{ review.user_id }}
+            <strong>Username:</strong> {{ review.username }}
         </div>
         <!-- You can add additional information from the review model here -->
     </div>
