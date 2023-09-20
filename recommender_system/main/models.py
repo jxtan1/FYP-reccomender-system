@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     product_id = models.AutoField(primary_key= True)
     name = models.CharField(max_length=200, unique=True)
-    price = models.CharField(max_length=200) # I need to set max_length
+    price = models.CharField(max_length=200) # Keep as a string for now
     sold_count = models.IntegerField() #product_owner = models.ForeignKey(User, on_delete=models.CASCADE, default = 1, to_field='id')
     #description = models.TextField()
 
@@ -27,9 +27,9 @@ class Review(models.Model):
         (4, '4'),
         (5, '5'),
     ] 
-    product_name = models.ForeignKey(Product, on_delete=models.CASCADE, default=1, to_field='product_id')
+    product_name = models.ForeignKey(Product, on_delete=models.CASCADE, to_field='name') # Retrieve from product
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
-    username = models.ForeignKey(Reviewer, on_delete=models.CASCADE)
+    username = models.ForeignKey(Reviewer, on_delete=models.CASCADE, to_field='username') # Retrieve from reviewer
     comment = models.TextField()
 
 

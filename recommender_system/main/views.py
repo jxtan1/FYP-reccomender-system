@@ -116,11 +116,12 @@ def import_from_excel(request):
             # Loop over list of dictionaries and save each one to the Product model
             for item in data:
                 # Find product & reviewer objects
-                product = Product.objects.filter(name=data["product_name"])
-                reviewer = Reviewer.objects.filter(username=data["username"])
+                #product = Product.objects.filter(name=item["product_name"])
+                product = get_object_or_404(Product, name=item["product_name"])
+                #reviewer = Reviewer.objects.filter(username=item["username"])
+                reviewer = get_object_or_404(Reviewer, username=item["username"])
                 #review = Review(**item)
-                review = Review(product_name=product, rating=data["rating"], username=reviewer, comment=data["comment"])
-                review = Review()
+                review = Review(product_name=product, rating=item["rating"], username=reviewer, comment=item["comment"])
                 review.save()
         
         return render(request, 'main/import_success.html')
