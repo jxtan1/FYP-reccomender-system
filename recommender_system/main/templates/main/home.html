@@ -3,22 +3,35 @@
 {% block title %}Home Page{% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search_products' %}">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="q" placeholder="Search products">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="fas fa-search"></i> <!-- Magnifying glass icon -->
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="height: 20px;"></div>  <!-- add blank space below the search bar-->
+
+
     <div class="row row-cols-1 row-cols-md-4 g-4">
         {% for product in products %}
         <div class="col">
             <div class="card h-100">
-                <!--<img src="..." class="card-img-top" alt="..."> -->
                 <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'product_detail' product.product_id %}">{{ product.name }}</a></h5>                    
-                    {% comment %} <p class="card-text">{{product.description}}</p> {% endcomment %}
+                    <h5 class="card-title"><a href="{% url 'product_detail' product.product_id %}">{{ product.name }}</a></h5>
                 </div>
-                {% comment %} <div class="card-footer">
-                    <small class="text-body-secondary">{{product.product_owner}}</small>
-                </div> {% endcomment %}
             </div>
         </div>
         {% empty %}
-        <p> No product yet :(</p>
+        <p>No product yet :(</p>
         {% endfor %}
     </div>
     <br/><br/><br/><br/><br/>

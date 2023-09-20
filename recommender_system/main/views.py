@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -45,9 +45,6 @@ def add_product(request):
     return render(request, 'main/add_product.html', {"form": form})
 
 
-from django.shortcuts import render, get_object_or_404
-from .models import Product, Review
-
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     reviews = Review.objects.filter(product_name=product)
@@ -56,6 +53,19 @@ def product_detail(request, product_id):
         'reviews': reviews,
     }
     return render(request, 'main/product_detail.html', context)
+
+
+def search_products(request):
+    query = request.GET.get('q')
+    products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
+    
+    context = {
+        'products': products,
+    }
+    
+    return render(request, 'main/home.html', context)
+
+
 
 from openpyxl import load_workbook
 import pandas as pd
