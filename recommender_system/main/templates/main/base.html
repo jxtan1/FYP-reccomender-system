@@ -23,9 +23,14 @@
               <a class="nav-link" href="/home">Home</a>
             </li>
             {% if user.is_authenticated %}
+            {% if user.is_staff %}
             <li class="nav-item">
               <a class="nav-link" href="/add-product">Add Product</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">Admin Dashboard</a>
+            </li>
+            {% endif %}
             {% endif %}
           </ul>
         </div>
