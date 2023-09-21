@@ -24,9 +24,12 @@ Team members -
  py -m pip install Django
 
 
-pip install crispy-bootstrap5
-pip install openpyxl
-pip install pandas
+ pip install crispy-bootstrap5
+
+ pip install openpyxl
+
+ pip install pandas
+
 # Mac
 
  source macSource/myworld/bin/activate 
