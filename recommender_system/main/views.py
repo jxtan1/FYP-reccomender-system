@@ -127,8 +127,8 @@ def import_from_excel(request):
             # Loop over list of dictionaries and save each one to the Product model
             for item in data:
                 try:
-                    product = Product(**item)
-                    product.save()
+                    product = Product.objects.update_or_create(**item)
+                    product[0].save()
                 except IntegrityError as e:
                     if 'unique constraint' in e.args[0]:
                         #Skip repeats
@@ -145,7 +145,7 @@ def import_from_excel(request):
             for item in reviewers:
                 # Need a way to catch verify unique=True error
                 try:
-                    reviewer = Reviewer(username=item)
+                    reviewer = Reviewer(username=item) # Should not update any existing due to unique constraint
                     reviewer.save()
                 except IntegrityError as e:
                     if 'unique constraint' in e.args[0]:
@@ -156,12 +156,18 @@ def import_from_excel(request):
             for item in data:
                 # Find product & reviewer objects
                 #product = Product.objects.filter(name=item["product_name"])
-                product = get_object_or_404(Product, name=item["product_name"])
+                #product = get_object_or_404(Product, name=item["product_name"])
+                try:
+                    product = Product.objects.get(name=item["product_name"])
+                except Product.DoesNotExist:
+                    # Skip products not in database
+                    print(item["product_name"], "not found!")
+                    continue
                 #reviewer = Reviewer.objects.filter(username=item["username"])
                 reviewer = get_object_or_404(Reviewer, username=item["username"])
                 #review = Review(**item)
-                review = Review(product_name=product, rating=item["rating"], username=reviewer, comment=item["comment"])
-                review.save()
+                review = Review.objects.update_or_create(product_name=product, rating=item["rating"], username=reviewer, comment=item["comment"])
+                review[0].save()
         
         return render(request, 'main/import_success.html')
     return render(request, 'main/import_form.html')
