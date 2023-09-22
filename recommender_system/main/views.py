@@ -40,6 +40,7 @@ def sign_up(request):
 
     return render(request, 'registration/sign_up.html', {"form": form})
 
+
 @login_required(login_url="/login")
 @user_passes_test(is_admin, login_url="/home")
 def add_product(request):
@@ -59,22 +60,22 @@ def add_product(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     reviews = Review.objects.filter(product_name=product)
+    
+    # Create a Paginator object for reviews
+    paginator = Paginator(reviews, 10)  # Change 10 to the number of reviews per page you desire
+
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page')
+
+    # Get the Page object for the current page of reviews
+    reviews = paginator.get_page(page)
+
     context = {
         'product': product,
         'reviews': reviews,
     }
     return render(request, 'main/product_detail.html', context)
 
-
-# def search_products(request):
-#     query = request.GET.get('q')
-#     products = Product.objects.filter(name__icontains=query) if query else Product.objects.all()
-    
-#     context = {
-#         'products': products,
-#     }
-    
-#     return render(request, 'main/home.html', context)
 
 def search_products(request):
     query = request.GET.get('q')
