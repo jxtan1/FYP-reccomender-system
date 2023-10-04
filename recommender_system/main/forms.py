@@ -5,7 +5,7 @@ from .models import Product, Review, CustomUser
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required = True)
-    name = forms.CharField(max_length = 100)
+    #name = forms.CharField(max_length = 100)
     gender_choices = (
         ('', 'Select Gender'),
         ('M', 'Male'),
@@ -16,11 +16,22 @@ class RegisterForm(UserCreationForm):
         choices = gender_choices,
         initial ='',  # Initially, no selection (placeholder)
         widget = forms.Select(attrs={'class': 'custom-select'}),
-    )  
+    )
+    
+    account_types = (
+        ('', 'Select Account'),
+        ('B', 'Buyer'),
+        ('S', 'Seller')
+    )
+    account = forms.ChoiceField(
+        choices = account_types,
+        initial = '',
+        widget = forms.Select(attrs={'class': 'custom-select'}),
+    )
 
     class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'gender', 'email', 'password1', 'password2']
+        model = CustomUser
+        fields = ['username', 'email', 'first_name', 'last_name', 'gender', 'account', 'password1', 'password2']
 
 
 
