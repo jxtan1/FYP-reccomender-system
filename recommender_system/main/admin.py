@@ -5,7 +5,7 @@ from .models import Review, Product, CustomUser#, Reviewer
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     #list_display = ('rating', 'user_id', 'product_id', 'comment')
-    list_display = ('product_name', 'rating', 'username', 'comment')
+    list_display = ('review_id', 'product_name', 'rating', 'username', 'comment')
     search_fields = ('product_name__name', 'rating', 'username__username', 'comment')
 
 

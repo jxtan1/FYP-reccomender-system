@@ -116,7 +116,7 @@ def import_from_excel(request):
             # Rename columns to match model
             rename_columns = {"Product Name": "name", "Price": "price", "Total Sold": "sold_count", "Seller": 'seller', "Description": "description", "Image": "image"}
             df.rename(columns = rename_columns, inplace=True)
-            df['sold_count'] = df['sold_count'].str.replace(',', '').astype(int) # Change sold_count to int
+            df['sold_count'] = df['sold_count'].astype(str).str.replace(',', '').astype(int) # Change sold_count to int
             sellers = (df.loc[:,'seller']).drop_duplicates() # Get unique sellers
             # Save all sellers from products gathered to the Seller model
             for item in sellers:

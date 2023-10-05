@@ -46,8 +46,8 @@ class Product(models.Model):
     description = models.CharField(max_length=200)
     image = models.CharField(max_length=200)
 
-    def __str__(self):
-        return str(self.product_id) + '\n' + self.name + '\n' + self.price + '\n' + str(self.sold_count) + str(self.seller) + self.description + self.image
+    #def __str__(self):
+    #    return str(self.product_id) + '\n' + self.name + '\n' + self.price + '\n' + str(self.sold_count) + str(self.seller) + self.description + self.image
 
 # Model for customers who reviewed the scraped products
 # class Reviewer(models.Model):
@@ -63,6 +63,7 @@ class Review(models.Model):
         (4, '4'),
         (5, '5'),
     ] 
+    review_id = models.AutoField(primary_key= True)
     product_name = models.ForeignKey(Product, on_delete=models.CASCADE, to_field='name') # Retrieve from product
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
     username = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username') # Retrieve from reviewer (CustomUser Account='B')
