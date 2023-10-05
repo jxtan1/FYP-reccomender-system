@@ -6,6 +6,7 @@ import pandas as pd
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException
 
 class ScrapeLazada():
     
@@ -50,16 +51,30 @@ class ScrapeLazada():
                 self.detectCaptcha(driver)
                 WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#root")))
                 #time.sleep(5) # Mandatory wait for page to load
-                print('Reading page ' + str(page + 1) + ' of products') # Output
+                # Load every single LOVELY product image
+                while len(driver.find_elements(By.CSS_SELECTOR, 'div.ICdUp > div._95X4G > a > div > img[src^="data:image"]')) > 0:
+                    imgs = driver.find_elements(By.CSS_SELECTOR, 'div.ICdUp > div._95X4G > a > div > img[src^="data:image"]')
+                    for img in imgs:
+                        try:
+                            driver.execute_script("arguments[0].scrollIntoView(true);", img)
+                        except StaleElementReferenceException:
+                            print(StaleElementReferenceException)
+                            break
+                
                 soup = BeautifulSoup(driver.page_source, "html.parser")
                 prodcount = 0
                 for product in soup.findAll('div', class_='Bm3ON'):                    
                     prodname = product.find('div', class_='RfADt').text
 
                     # Check for duplicate
-                    #if prodname in prodDf["Product Name"].values:
                     if any(prodname == prod[0] for prod in prodList):
                         prodcount += 1
+                        # Check if existing product image is an invalid url
+                        prods = filter(lambda prod: prod[0] == prodname, prodList)
+                        for prod in prods:
+                            if ('data:image' in prod[-2]):
+                                print('Updating image for ' + str(prodcount + 1) + ' ' + prodname)
+                                prod[-2] = product.find('div', class_='picture-wrapper').find('img').get('src')
                         print('Skipping duplicate ' + str(prodcount + 1) + ' ' + prodname)
                         continue
 
@@ -147,15 +162,16 @@ class ScrapeLazada():
         # Loop until no more next review page
         while(True):
             # Attempt to go back one page if captcha was solved
-            if self.detectCaptcha(driver):
-                button_prev=WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button.next-pagination-item.prev")))
-                driver.execute_script("arguments[0].click();", button_prev)
-                oldPg -= 1
-                continue
+            # if self.detectCaptcha(driver):
+            #     button_prev=WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button.next-pagination-item.prev")))
+            #     driver.execute_script("arguments[0].click();", button_prev)
+            #     oldPg -= 1
+            #     continue
+            self.detectCaptcha(driver)
             # Skip product review page if no reviews found
             try:
                 WebDriverWait(driver,5).until(EC.visibility_of_element_located((By.CLASS_NAME, 'mod-reviews')))
-                driver.execute_script("arguments[0].scrollIntoView(true);", driver.find_element(By.CLASS_NAME, 'review-pagination'))
+                driver.execute_script("arguments[0].scrollIntoView(false);", driver.find_element(By.CLASS_NAME, 'review-pagination'))
             except:
                 print("Skipping product review page with no reviews...")
                 break
@@ -187,7 +203,7 @@ class ScrapeLazada():
                 reviewcount += 1
                 print(str(reviewcount) + ' ' + str(rating) + 'stars ' + reviewer + ': ' + content)
             # Attempt to click next review page
-            time.sleep(randint(0, 2)) # Can I remove this since every button press does not require a url request?
+            # time.sleep(randint(0, 2)) # Can I remove this since every button press does not require a url request?
             # Break out when next page does not go to the next page (This might be useless unless shifted to before appending)
             if (currPg <= oldPg):
                 continue
@@ -208,10 +224,10 @@ class ScrapeLazada():
     def detectCaptcha(self, driver):
         captcha = False
         captchaList = ["body > div.J_MIDDLEWARE_FRAME_WIDGET", "body > punish-component", "body > div.J_MIDDLEWARE_FRAME_WIDGET > div > a:contains('关闭')", "div.baxia-dialog[style='display: block;']"]
-        time.sleep(2)
+        #time.sleep(2)
         for captchacss in captchaList:
             try:
-                WebDriverWait(driver, 0.5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, captchacss)))
+                WebDriverWait(driver, 0.25).until(EC.visibility_of_element_located((By.CSS_SELECTOR, captchacss)))
                 while len(driver.find_elements(By.CSS_SELECTOR, captchacss)) > 0:
                     print("!!!CAPTCHA!!!")
                     captcha = True
@@ -228,7 +244,7 @@ class ScrapeLazada():
                     driver.switch_to.window(driver.current_window_handle)
                     time.sleep(5) # Delay on captcha detection message
                     
-                time.sleep(2) # Wait a moment after captcha is solved
+                time.sleep(1) # Wait a moment after captcha is solved
                 break # Stop looking for other captchas once one is found
             except:
                 captcha = False
