@@ -19,6 +19,7 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'gender', 'account', 'is_staff', 'is_active')
+    search_fields = ('username', 'email')  # Add fields you want to search by
 
 # @admin.register(Reviewer)
 # class ReviewerAdmin(admin.ModelAdmin):
