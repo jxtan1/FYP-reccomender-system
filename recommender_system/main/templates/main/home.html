@@ -24,16 +24,23 @@
     <div class="row row-cols-1 row-cols-md-4 g-4">
         {% for product in products %}
         <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'product_detail' product.product_id %}">{{ product.name }}</a></h5>
+            <a href="{% url 'product_detail' product.product_id %}" style = "text-decoration:none;">
+                <div class="card h-100">
+                    <img src="{{ product.image }}" class="card-img-top" alt="{% if product.image %}{{ product.name }}{% else %}No Image Available{% endif %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">${{ product.price }}</p>
+                        <p class="card-text">Average Rating: {{ product.average_rating|default:"No reviews yet"|floatformat:1 }}</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         {% empty %}
         <p>No product yet :(</p>
         {% endfor %}
     </div>
+
+
 
     <!-- Pagination -->
     <div style="text-align: center; margin-top: 20px;">

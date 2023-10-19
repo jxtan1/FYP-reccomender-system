@@ -5,8 +5,37 @@
 {% block content %}
 <!-- detail.html -->
 <h1>{{ product.name }}</h1>
-<p>Price: <br>{{ product.price }}</p>
+<p>Price: <br>${{ product.price }}</p>
 <p>Sold: {{ product.sold_count }}</p>
+
+
+<div class="product-image">
+    {% if product.image %}
+        <img src="{{ product.image }}" alt="{{ product.name }}" style="max-width: 300px; max-height: 300px;">
+    {% else %}
+        <p>No Image Available</p>
+    {% endif %}
+</div>
+
+<br>
+<p>Average Rating: {{ average_rating|default:"No ratings yet"|floatformat:1  }}</p>
+
+<div class="rating-stars">
+    {% if average_rating %}
+        {% with avg_rating=average_rating|floatformat:1 %}
+        {% for i in "12345" %}
+            {% if i <= avg_rating %}
+                <i class="fas fa-star" style="color: gold;"></i>  <!-- Solid gold star icon -->
+            {% else %}
+                <i class="far fa-star"></i>  <!-- Outline star icon from Font Awesome -->
+            {% endif %}
+        {% endfor %}
+        {% endwith %}
+    {% else %}
+        <p>No ratings yet</p>
+    {% endif %}
+</div>
+<p><small>{{ total_ratings|default:"No ratings yet" }} ratings</small></p>
 
 <h2>Ratings and Reviews</h2>
 <ul>
@@ -49,3 +78,4 @@
 
 
 {% endblock %}
+

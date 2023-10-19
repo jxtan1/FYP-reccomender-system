@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from .models import CustomUser, Product, Review#, Reviewer 
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.db.models import Avg
 
 
 # Create your views here.
@@ -14,17 +15,19 @@ from django.contrib.auth.decorators import user_passes_test
 def is_admin(user):
     return user.is_authenticated and user.is_staff  # Check if the user is authenticated and is a staff member (admin).
 
+
 @login_required(login_url="/login")
 def home(request):
     all_products = Product.objects.order_by('product_id')
-    # Create a Paginator object with a specified number of products per page
-    paginator = Paginator(all_products, 50)  # Change 50 to the number of products per page you desire
+    paginator = Paginator(all_products, 50)
 
-    # Get the current page number from the request's GET parameters
     page = request.GET.get('page')
-
-    # Get the products for the current page
     products = paginator.get_page(page)
+
+    # Calculate the average rating for each product
+    for product in products:
+        product.average_rating = Review.objects.filter(product_name=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+
     return render(request, 'main/home.html', {"products": products})
 
 
@@ -60,7 +63,15 @@ def add_product(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     reviews = Review.objects.filter(product_name=product)
-    
+
+    total_ratings = reviews.count()  # Calculate the total number of ratings
+
+    # Calculate the average rating
+    if total_ratings > 0:
+        average_rating = sum(review.rating for review in reviews) / total_ratings
+    else:
+        average_rating = 0  # Default to 0 if there are no ratings
+
     # Create a Paginator object for reviews
     paginator = Paginator(reviews, 10)  # Change 10 to the number of reviews per page you desire
 
@@ -73,9 +84,10 @@ def product_detail(request, product_id):
     context = {
         'product': product,
         'reviews': reviews,
+        'average_rating': average_rating,
+        'total_ratings': total_ratings,  # Include total_ratings in the context
     }
     return render(request, 'main/product_detail.html', context)
-
 
 def search_products(request):
     query = request.GET.get('q')
