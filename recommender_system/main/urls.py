@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib import admin
 from . import views
 
 urlpatterns = [
@@ -11,3 +12,8 @@ urlpatterns = [
     path('search/', views.search_products, name='search_products'),
 
 ]
+
+
+#admin.site.index_title = 'E-commerce Website'
+admin.site.site_header = 'E-commerce Website Admin Area'
+admin.site.site_title = 'Admin Dashboard'
