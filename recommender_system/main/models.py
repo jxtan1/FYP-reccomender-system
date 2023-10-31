@@ -17,7 +17,8 @@ class CustomUser(AbstractUser):
     # Differentiates buyer and seller acounts
     account_types = (
         ('B', 'Buyer'),
-        ('S', 'Seller')
+        ('S', 'Seller'),
+        ('A', 'Admin')
     )
     account = models.CharField(max_length=1, choices=account_types)
 
