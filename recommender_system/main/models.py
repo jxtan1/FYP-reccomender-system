@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
 from django.contrib.auth.models import AbstractUser
-#from django.db import models
 
 # Extend default django user and used for front-end accounts
 class CustomUser(AbstractUser):
@@ -69,3 +67,27 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
     username = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username') # Retrieve from reviewer (CustomUser Account='B')
     comment = models.TextField()
+
+
+class Feedback(models.Model):
+    feedback_id = models.AutoField(primary_key= True)
+    respondent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username')
+    rating = models.PositiveSmallIntegerField(
+        verbose_name="How satisfied are you with your shopping experience?",
+        choices=[(i, str(i)) for i in range(1, 11)],
+    )
+    easy_to_navigate = models.BooleanField(
+        verbose_name="Did you find the website easy to navigate?",
+    )
+    additional_categories = models.TextField(
+        verbose_name="What products or categories would you like to see more of on our website?",
+        blank=True,
+    )
+    information_found = models.BooleanField(
+        verbose_name="Were you able to find the information you were looking for?",
+    )
+    comments = models.TextField(
+        verbose_name="Any additional comments or suggestions for improvement?",
+        blank=True,
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)

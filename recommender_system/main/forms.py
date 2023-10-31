@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Product, Review, CustomUser
+from .models import Product, Review, CustomUser, Feedback
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required = True)
@@ -40,3 +40,15 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'sold_count']
+
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = [
+            'rating',
+            'easy_to_navigate',
+            'additional_categories',
+            'information_found',
+            'comments',
+        ]

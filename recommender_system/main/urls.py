@@ -10,6 +10,7 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
     path('import/', views.import_from_excel, name='import_from_excel'),
     path('search/', views.search_products, name='search_products'),
+    path('feedback/', views.feedback_view, name='feedback_form'),
 
 ]
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, ProductForm
+from .forms import FeedbackForm, RegisterForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .models import CustomUser, Product, Review#, Reviewer 
@@ -15,6 +15,9 @@ from django.contrib.auth.decorators import user_passes_test
 def is_admin(user):
     return user.is_authenticated and user.is_staff  # Check if the user is authenticated and is a staff member (admin).
 
+def is_customer_or_seller(user):
+    # Check if the user is a customer or a seller
+    return user.is_authenticated and user.account in ('B', 'S')
 
 @login_required(login_url="/login")
 def home(request):
@@ -194,3 +197,18 @@ def import_from_excel(request):
         return render(request, 'main/import_success.html')
     return render(request, 'main/import_form.html')
         
+@login_required(login_url="/login")
+@user_passes_test(is_customer_or_seller, login_url="/home")
+def feedback_view(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.respondent = request.user  # Automatically set the user
+            feedback.save()
+            # Redirect or display a thank you message
+            return render(request, 'main/feedback_thankyou_message.html')
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'main/feedback_form.html', {'form': form})

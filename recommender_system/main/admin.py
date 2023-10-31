@@ -1,7 +1,8 @@
 from typing import Any
+from django import forms
 from django.contrib import admin
 from django.db.models.query import QuerySet
-from .models import Review, Product, CustomUser#, Reviewer 
+from .models import Feedback, Review, Product, CustomUser#, Reviewer 
 
 # Register your models here.
 @admin.register(Review)
@@ -10,6 +11,10 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('review_id', 'product_name', 'rating', 'username', 'comment')
     search_fields = ('product_name__name', 'rating', 'username__username', 'comment')
     list_filter = ('rating',)
+    readonly_fields = list_display
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
 
 
 @admin.register(Product)
@@ -56,9 +61,20 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     list_display = ('username', 'email', 'first_name', 'last_name', 'gender', 'account', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')  # Add fields you want to search by
-    list_filter = ("is_active", 'account', 'is_staff', 'gender', 'date_joined', EmailFilter)
+    list_filter = ('is_active', 'account', 'is_staff', 'gender', 'date_joined', EmailFilter)
 
 # @admin.register(Reviewer)
 # class ReviewerAdmin(admin.ModelAdmin):
 #     list_display = ('reviewer_id', 'username')
 
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    #form = FeedbackAdminForm
+    list_display = ('feedback_id', 'respondent', 'rating', 'easy_to_navigate', 'additional_categories', 'information_found', 'comments', 'timestamp')
+    search_fields = ('respondent__username',)  # Add fields you want to search by
+    readonly_fields = list_display
+    list_filter = ('rating', 'timestamp')
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
