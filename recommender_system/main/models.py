@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
         ('F', 'Female'),
         ('O', 'Other'),
     )
-    gender = models.CharField(max_length=1, choices=gender_choices)
+    gender = models.CharField(max_length=1, choices=gender_choices, blank=True, null=True)
 
 
     # Differentiates buyer and seller acounts
