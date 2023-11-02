@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import FeedbackForm, RegisterForm, ProductForm
+from .forms import RegisterForm, ProductForm, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from .models import CustomUser, Product, Review#, Reviewer 
@@ -7,6 +8,14 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Avg
 
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
+from django.views.generic.base import TemplateView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.models import User
 
 # Create your views here.
 # In views.py
@@ -108,6 +117,63 @@ def search_products(request):
     products = paginator.get_page(page)
 
     return render(request, 'main/home.html', {"products": products})
+
+
+
+@login_required
+def view_account(request):
+    user = request.user  # Retrieve the current user
+    return render(request, 'main/view_account.html', {'user': user})
+
+@login_required
+def edit_account(request):
+    if request.method == 'POST':
+        form = UserProfileEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('/view_account')
+    else:
+        form = UserProfileEditForm(instance=request.user)
+    return render(request, 'main/edit_account.html', {'form': form})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Update the session to prevent the user from being logged out
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('/view_account')
+        else:
+            messages.error(request, 'Please correct the error(s) below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render(request, 'registration/change_password.html', {'form': form})
+
+class CustomPasswordChangeView(PasswordChangeView):
+    success_url = reverse_lazy('password_change_done')  # Redirect to a success page after changing the password
+
+class PasswordChangeDoneView(TemplateView):
+    template_name = 'registration/password_change_done.html'
+
+    @login_required
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST' and 'confirm_delete' in request.POST:
+        # Delete the user account
+        user = request.user
+        user.delete()
+
+        return redirect('logout')  # You can redirect to the logout view or any other appropriate page
+    return render(request, 'main/confirm_delete.html')
+
 
 
 from openpyxl import load_workbook

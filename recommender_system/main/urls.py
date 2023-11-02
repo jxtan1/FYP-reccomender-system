@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.home, name = 'home'),
@@ -11,6 +12,12 @@ urlpatterns = [
     path('import/', views.import_from_excel, name='import_from_excel'),
     path('search/', views.search_products, name='search_products'),
     path('feedback/', views.feedback_view, name='feedback_form'),
+    path('edit_account/', views.edit_account, name='edit_account'),
+    path('view_account/', views.view_account, name='view_account'),
+    path('change_password',views.change_password,name='change_password'),
+    path('password_change_done',views.PasswordChangeDoneView.as_view(), name= 'password_change_done'),  
+    path('delete_account',views.delete_account, name = 'delete_account'),  
+
 
 ]
 
@@ -18,3 +25,9 @@ urlpatterns = [
 #admin.site.index_title = 'E-commerce Website'
 admin.site.site_header = 'E-commerce Website Admin Area'
 admin.site.site_title = 'Admin Dashboard'
+    
+
+
+
+
+
