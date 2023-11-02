@@ -42,8 +42,12 @@
             {% if user.is_authenticated %}
             <span class="navbar-text">Logged in as {{user.username}} | </span>
             <li class="nav-item">
+              <a class = "nav-link" href="/view_account">View Account</a> <!-- not working yet -->
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
             </li>
+
             {% else %}
             <li class="nav-item">
               <a class="nav-link" href="/login">Login</a>
