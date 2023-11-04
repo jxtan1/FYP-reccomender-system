@@ -28,6 +28,15 @@ def is_customer_or_seller(user):
     # Check if the user is a customer or a seller
     return user.is_authenticated and user.account in ('B', 'S')
 
+
+def is_customer(user):
+    # Check if the user is a customer or a seller
+    return user.is_authenticated and user.account in ('B')
+
+def is_seller(user):
+    # Check if the user is a customer or a seller
+    return user.is_authenticated and user.account in ('S')
+
 @login_required(login_url="/login")
 def home(request):
     all_products = Product.objects.order_by('product_id')
