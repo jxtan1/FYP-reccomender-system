@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import FeedbackForm, RegisterForm, ProductForm
+from .forms import CustomerFeedbackForm, SellerFeedbackForm, RegisterForm, ProductForm
 from .forms import RegisterForm, ProductForm, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -273,17 +273,36 @@ def import_from_excel(request):
     return render(request, 'main/import_form.html')
         
 @login_required(login_url="/login")
-@user_passes_test(is_customer_or_seller, login_url="/home")
-def feedback_view(request):
+@user_passes_test(is_customer, login_url="/home")
+def customer_feedback_view(request):
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
+        form = CustomerFeedbackForm(request.POST)
         if form.is_valid():
             feedback = form.save(commit=False)
             feedback.respondent = request.user  # Automatically set the user
             feedback.save()
             # Redirect or display a thank you message
             return render(request, 'main/feedback_thankyou_message.html')
+
     else:
-        form = FeedbackForm()
+        form = CustomerFeedbackForm()
+
+    return render(request, 'main/feedback_form.html', {'form': form})
+
+
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
+def seller_feedback_view(request):
+    if request.method == 'POST':
+        form = SellerFeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.respondent = request.user  # Automatically set the user
+            feedback.save()
+            # Redirect or display a thank you message
+            return render(request, 'main/feedback_thankyou_message.html')
+
+    else:
+        form = SellerFeedbackForm()
 
     return render(request, 'main/feedback_form.html', {'form': form})

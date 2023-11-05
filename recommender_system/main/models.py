@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
@@ -69,8 +70,8 @@ class Review(models.Model):
     comment = models.TextField()
 
 
-class Feedback(models.Model):
-    feedback_id = models.AutoField(primary_key= True)
+class CustomerFeedback(models.Model):
+    feedback_id = models.CharField(primary_key=True, max_length=30)  # Define it as a CharField
     respondent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username')
     rating = models.PositiveSmallIntegerField(
         verbose_name="How satisfied are you with your shopping experience?",
@@ -86,8 +87,55 @@ class Feedback(models.Model):
     information_found = models.BooleanField(
         verbose_name="Were you able to find the information you were looking for?",
     )
+    recommendation_relevance = models.BooleanField(
+        verbose_name="Do you find the recommended products relevant to your interest?"
+    )
+    recommendation_accuracy_rating= models.PositiveSmallIntegerField(
+        verbose_name="How would you rate our product recommendation accuracy?", 
+        choices=[(i, str(i)) for i in range(1, 11)],
+    )
     comments = models.TextField(
         verbose_name="Any additional comments or suggestions for improvement?",
         blank=True,
     )
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.feedback_id:
+            current_time = timezone.now()
+            # Create a unique identifier using the current timestamp
+            unique_id = 'C' + current_time.strftime("%Y%m%d%H%M%S%f")  # Prefix with 'C'
+            self.feedback_id = unique_id
+        super().save(*args, **kwargs)
+
+
+class SellerFeedback(models.Model):
+    feedback_id = models.CharField(primary_key=True, max_length=30)  # Define it as a CharField
+    respondent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username')
+    rating = models.PositiveSmallIntegerField(
+        verbose_name="How satisfied are you with your experience as a seller on our platform?",
+        choices=[(i, str(i)) for i in range(1, 11)],
+    )
+    easy_to_sell = models.BooleanField(
+        verbose_name="Was it easy to list your products on our platform?",
+    )
+    fee_structure = models.BooleanField(
+        verbose_name="Were you satisfied with the payment process and fee structure?",
+    )
+    customer_support = models.PositiveSmallIntegerField(
+        verbose_name="How would you rate the support provided to sellers by our customer support team?",
+        choices=[(i, str(i)) for i in range(1, 11)],
+    )
+    comments = models.TextField(
+        verbose_name="Any additional comments or suggestions for improvement?",
+        blank=True,
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.feedback_id:
+            current_time = timezone.now()
+            # Create a unique identifier using the current timestamp
+            unique_id = 'S' + current_time.strftime("%Y%m%d%H%M%S%f")  # Prefix with 'S'
+            self.feedback_id = unique_id
+        super().save(*args, **kwargs)

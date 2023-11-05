@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Product, Review, CustomUser, Feedback
+from .models import Product, Review, CustomUser, CustomerFeedback, SellerFeedback
 from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse
 
@@ -52,13 +52,29 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'price', 'sold_count']
 
 
-class FeedbackForm(forms.ModelForm):
+class CustomerFeedbackForm(forms.ModelForm):
     class Meta:
-        model = Feedback
+        model = CustomerFeedback
         fields = [
             'rating',
             'easy_to_navigate',
             'additional_categories',
             'information_found',
+            'recommendation_relevance',
+            'recommendation_accuracy_rating',
             'comments',
         ]
+
+
+class SellerFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = SellerFeedback
+        fields = [
+            'rating',
+            'easy_to_sell',
+            'fee_structure',
+            'customer_support',
+            'comments',
+        ]
+
+

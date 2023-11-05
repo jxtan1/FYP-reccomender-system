@@ -2,7 +2,13 @@ from typing import Any
 from django import forms
 from django.contrib import admin
 from django.db.models.query import QuerySet
-from .models import Feedback, Review, Product, CustomUser#, Reviewer 
+from .models import CustomerFeedback, SellerFeedback, Review, Product, CustomUser#, Reviewer 
+
+def get_all_fields(model):
+    """
+    Get all fields (attributes) of the model.
+    """
+    return [field.name for field in model._meta.get_fields()]
 
 # Register your models here.
 @admin.register(Review)
@@ -68,13 +74,25 @@ class CustomUserAdmin(admin.ModelAdmin):
 #     list_display = ('reviewer_id', 'username')
 
 
-@admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
+@admin.register(CustomerFeedback)
+class CustomerFeedbackAdmin(admin.ModelAdmin):
     #form = FeedbackAdminForm
-    list_display = ('feedback_id', 'respondent', 'rating', 'easy_to_navigate', 'additional_categories', 'information_found', 'comments', 'timestamp')
+    list_display = get_all_fields(CustomerFeedback)
     search_fields = ('respondent__username',)  # Add fields you want to search by
     readonly_fields = list_display
-    list_filter = ('rating', 'timestamp')
+    list_filter = ('rating', 'recommendation_relevance', 'recommendation_accuracy_rating', 'timestamp')
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
+    
+
+@admin.register(SellerFeedback)
+class SellerFeedbackAdmin(admin.ModelAdmin):
+    #form = FeedbackAdminForm
+    list_display = get_all_fields(SellerFeedback)
+    search_fields = ('respondent__username',)  # Add fields you want to search by
+    readonly_fields = list_display
+    list_filter = ('rating', 'easy_to_sell', 'timestamp')
 
     def has_add_permission(self, request):
         return False  # Disallow adding new feedback through the admin
