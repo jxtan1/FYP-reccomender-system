@@ -39,6 +39,12 @@ Team members -
 
  pip3 install crispy-bootstrap5
 
+ pip3 install openpyxl
+
+ pip3 install pandas
+
+ python3 manage.py runserver
+
 
 
  # Note
