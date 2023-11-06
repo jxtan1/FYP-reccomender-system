@@ -18,7 +18,9 @@ urlpatterns = [
     path('change_password',views.change_password,name='change_password'),
     path('password_change_done',views.PasswordChangeDoneView.as_view(), name= 'password_change_done'),  
     path('delete_account',views.delete_account, name = 'delete_account'),  
-
+    path('seller/my_products', views.SellerProductListView.as_view(), name='seller_products'),
+    path('seller/my_products/<int:product_id>/edit/', views.edit_product, name='edit_product'),
+    path('seller/my_products/<int:product_id>/delete/', views.delete_product, name='delete_product'),
 
 ]
 

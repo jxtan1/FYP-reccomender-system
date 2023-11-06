@@ -49,7 +49,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'price', 'sold_count']
+        fields = ['name', 'price', 'sold_count', 'description', 'image']
 
 
 class CustomerFeedbackForm(forms.ModelForm):

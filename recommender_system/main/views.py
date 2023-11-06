@@ -7,6 +7,9 @@ from .models import CustomUser, Product, Review#, Reviewer
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models import Avg
+from django.views.generic import ListView
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
@@ -66,19 +69,63 @@ def sign_up(request):
 
 
 @login_required(login_url="/login")
-@user_passes_test(is_admin, login_url="/home")
+@user_passes_test(is_seller, login_url="/home")
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
-            #product.productId = ProductForm.
+            # Automatically set the seller to the current user (seller)
+            product.seller = request.user
             product.save()
-            return redirect('/home')
+            return render(request, 'main/add_product_success.html')
     else:
         form = ProductForm()
 
     return render(request, 'main/add_product.html', {"form": form})
+
+
+class SellerProductListView(ListView):
+    model = Product
+    template_name = 'main/seller_my_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # Filter products to show only the ones owned by the logged-in seller
+        return Product.objects.filter(seller=self.request.user)
+    
+
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user != product.seller:
+        # Check if the product belongs to the currently logged-in seller
+        # If not, return a permission denied or error message
+        return render(request, 'main/not_authorized.html')
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+        return render(request, 'main/edit_product_success.html')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'main/edit_product.html', {'form': form, 'product': product})
+
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.user != product.seller:
+        # Check if the product belongs to the currently logged-in seller
+        # If not, return a permission denied or error message
+        return render(request, 'main/not_authorized.html')
+
+    if request.method == 'POST':
+        product.delete()
+        return render(request, 'main/delete_product_success.html')
+
+    return render(request, 'main/delete_product_confirm.html', {'product': product})
 
 
 def product_detail(request, product_id):

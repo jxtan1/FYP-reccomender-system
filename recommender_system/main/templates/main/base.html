@@ -25,9 +25,6 @@
             {% if user.is_authenticated %}
               {% if user.is_staff %}
               <li class="nav-item">
-                <a class="nav-link" href="/add-product">Add Product</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="/admin">Admin Dashboard</a>
               </li>
               <li class="nav-item">
@@ -41,6 +38,12 @@
                 </li>
                 {% endif %}
                 {% if user.account == "S" %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/add-product">Add Product</a>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'seller_products' %}">My Products</a>
+                </li>
+                </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/seller_feedback">Provide Feedback</a>
                 </li>
