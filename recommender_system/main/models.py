@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 # Extend default django user and used for front-end accounts
 class CustomUser(AbstractUser):
@@ -139,3 +140,11 @@ class SellerFeedback(models.Model):
             unique_id = 'S' + current_time.strftime("%Y%m%d%H%M%S%f")  # Prefix with 'S'
             self.feedback_id = unique_id
         super().save(*args, **kwargs)
+
+
+
+
+
+
+class Cart(models.Model):
+    items = models.ManyToManyField(Product)

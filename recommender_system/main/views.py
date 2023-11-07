@@ -353,3 +353,34 @@ def seller_feedback_view(request):
         form = SellerFeedbackForm()
 
     return render(request, 'main/feedback_form.html', {'form': form})
+
+
+
+#####
+
+from django.shortcuts import render, redirect
+from .models import Product, Cart
+
+def add_to_cart(request, product_id):
+    product = Product.get(pk=product_id)
+    cart, created = Cart.objects.get_or_create()
+    cart.items.add(product)
+    return redirect('cart')
+
+
+def cart_view(request):
+    cart, created = Cart.objects.get_or_create()
+    total_price = sum(item.price for item in cart.items.all())
+    return render(request, 'cart.html', {'cart': cart, 'total_price': total_price})
+
+def remove_from_cart(request, product_id):
+    product = Product.objects.get(pk=product_id)
+    cart, created = Cart.objects.get_or_create()
+    cart.items.remove(product)
+    return redirect('cart')
+
+def checkout(request):
+    cart, created = Cart.objects.get_or_create()
+    # Implement payment processing logic
+    # Redirect to payment confirmation page
+    return render(request, 'payment.html')

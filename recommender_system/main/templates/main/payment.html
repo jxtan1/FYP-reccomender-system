@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Checkout and Payment{% endblock %}
+
+{% block content %} 
+<h2 style="font-size: 24px; text-align: center; margin-bottom: 20px;">Checkout and Payment</h2>
+
+{% if cart.items.all %}
+  <p>Items in your cart:</p>
+  <ul>
+    {% for item in cart.items.all %}
+      <li>{{ item.name }} - ${{ item.price }}</li>
+    {% endfor %}
+  </ul>
+
+  <p>Total Price: ${{ total_price }}</p>
+
+  <!-- Add a payment form or payment processing logic here -->
+  <!-- You can integrate a payment gateway or use a mock payment form for simulation -->
+
+  <form method="post">
+    {% csrf_token %}
+    <!-- Payment form fields go here -->
+    <!-- Payment submit button -->
+    <button type="submit" class="btn btn-primary">Pay Now</button>
+  </form>
+{% else %}
+  <p>Your cart is empty. Please add items to your cart first.</p>
+{% endif %}
+{% endblock %}

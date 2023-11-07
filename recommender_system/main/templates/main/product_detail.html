@@ -5,7 +5,8 @@
 {% block content %}
 <!-- detail.html -->
 <h1>{{ product.name }}</h1>
-<p>Price: <br>${{ product.price }}</p>
+<p>Price: <br>${{ product.price }} </p>
+<a href="{% url 'edit_account'%}">Add to Cart</a>
 <p>Sold: {{ product.sold_count }}</p>
 
 

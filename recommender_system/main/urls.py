@@ -21,12 +21,18 @@ urlpatterns = [
     path('seller/my_products', views.SellerProductListView.as_view(), name='seller_products'),
     path('seller/my_products/<int:product_id>/edit/', views.edit_product, name='edit_product'),
     path('seller/my_products/<int:product_id>/delete/', views.delete_product, name='delete_product'),
+   ####
+   
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
 
+    path('cart/', views.cart_view, name='cart'),
+    path('remove_from_cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('checkout/', views.checkout, name='checkout'),
 ]
 
 
 #admin.site.index_title = 'E-commerce Website'
-admin.site.site_header = 'E-commerce Website Admin Area'
+admin.site.site_header = 'Blue Moon'
 admin.site.site_title = 'Admin Dashboard'
     
 
