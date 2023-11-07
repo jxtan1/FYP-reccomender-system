@@ -154,6 +154,7 @@ def product_detail(request, product_id):
         'reviews': reviews,
         'average_rating': average_rating,
         'total_ratings': total_ratings,  # Include total_ratings in the context
+        'seller': product.seller,
     }
     return render(request, 'main/product_detail.html', context)
 
@@ -355,6 +356,17 @@ def seller_feedback_view(request):
     return render(request, 'main/feedback_form.html', {'form': form})
 
 
+def seller_store(request, username):
+    seller = get_object_or_404(CustomUser, username=username)
+    products = Product.objects.filter(seller=seller)
+    # Calculate the average rating for each product
+    for product in products:
+        product.average_rating = Review.objects.filter(product_name=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+    context = {
+        'seller': seller,
+        'products': products,
+    }
+    return render(request, 'main/seller_store.html', context)
 
 #####
 

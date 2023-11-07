@@ -7,6 +7,8 @@
 <h1>{{ product.name }}</h1>
 <p>Price: <br>${{ product.price }} </p>
 <a href="{% url 'edit_account'%}">Add to Cart</a>
+<p>Sold by: <a href="{% url 'seller_store' seller.username %}">{{ seller.username }}</a></p>
+
 <p>Sold: {{ product.sold_count }}</p>
 
 
