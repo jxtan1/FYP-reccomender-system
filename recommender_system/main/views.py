@@ -62,7 +62,13 @@ def sign_up(request):
             user = form.save()
             #login(request, user)
             return render(request, 'registration/sign_up_success.html')
-
+        else:
+            for key, error in list(form.errors.items()):
+                if key == 'captcha' and error[0] == 'This field is required.':
+                    messages.error(request, "You must pass the reCAPTCHA test")
+                    continue
+                
+                messages.error(request, error) 
     else:
         form = RegisterForm()
 
