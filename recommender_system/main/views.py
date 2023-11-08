@@ -62,6 +62,7 @@ def sign_up(request):
             user = form.save()
             #login(request, user)
             return render(request, 'registration/sign_up_success.html')
+
     else:
         form = RegisterForm()
 

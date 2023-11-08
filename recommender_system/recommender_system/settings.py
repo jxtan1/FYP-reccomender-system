@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'crispy_forms',
-    'crispy_bootstrap5'   
+    'crispy_bootstrap5',
+    'captcha'   
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -132,3 +133,8 @@ LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = '/login'
 
 AUTH_USER_MODEL = 'main.CustomUser'  
+
+
+RECAPTCHA_PUBLIC_KEY = '6LfZuAQpAAAAAIMHsEDkPC5oISzffq5aNygIR8Kf'
+RECAPTCHA_PRIVATE_KEY = '6LfZuAQpAAAAALWWG5TqzeUqO_m9Ci6WJCnbXIvo'
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']

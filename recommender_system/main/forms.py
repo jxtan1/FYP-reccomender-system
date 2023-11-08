@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Product, Review, CustomUser, CustomerFeedback, SellerFeedback
 from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 
 
 class RegisterForm(UserCreationForm):
@@ -35,6 +37,8 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'first_name', 'last_name', 'gender', 'account', 'password1', 'password2']
+
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
 
 
