@@ -58,3 +58,7 @@ Team members -
 
 right click db.sqlite3 to open database
 run query in sample.sql
+
+
+# Captcha
+pip install django-recaptcha
