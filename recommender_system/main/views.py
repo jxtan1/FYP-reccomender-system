@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomerFeedbackForm, SellerFeedbackForm, RegisterForm, ProductForm
+# from .forms import CustomerFeedbackForm, SellerFeedbackForm, RegisterForm, ProductForm
+from .forms import *
 from .forms import RegisterForm, ProductForm, UserProfileEditForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
@@ -240,7 +241,7 @@ def delete_account(request):
 
 
 
-from openpyxl import load_workbook
+# from openpyxl import load_workbook
 import pandas as pd
 from django.db import IntegrityError
 
@@ -326,7 +327,94 @@ def import_from_excel(request):
         
         return render(request, 'main/import_success.html')
     return render(request, 'main/import_form.html')
+
+@login_required(login_url="/login")
+@user_passes_test(is_admin, login_url="/home")
+def admin_force_gen(request):
+    return render(request, 'main/admin_force_gen.html')
+
+from django.db.models import Count
+
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
+def buyer_recommendations(request):
+    #gen_similarity_matrix() # Only if you want to regenerate matrix everytime recommendations are viewed
+    prodlist = []
+    try:
+        results = make_prediction() # list of [username, product, prediction]
+        for i in range(len(results)):
+            print("Predicted", results[i][0], "rating", results[i][1], "as", results[i][2])
+            #printout.append("Predicted {0} rating {1} as {2}".format(results[i][0], results[i][1], results[i][2]))
+            prodlist.append(results[i][1])
+        #return printout
+    except:
+        print("Not enough data to recommend user, loading top 10 items")
+        # Find products with the top 10 highest ratings
+        top10 = Review.objects.values('product_name').annotate(Count('rating')).order_by('-rating__count')[:10]
+        for i in range(top10.count()):
+            print(top10)
+            prodlist.append(top10[i]['product_name'])
+    
+    products = Product.objects.filter(name__in=prodlist)
+    # Calculate the average rating for each product
+    for product in products:
+        product.average_rating = Review.objects.filter(product_name=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+    context = {
+        'seller': product.seller,
+        'products': products,
+        'predicted': ""
+    }
+    return render(request, 'main/seller_store.html', context)
+
+from collaborative_filtering.recommender import *
+
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
+def seller_predict_buyer(request):
+    if request.method == 'POST':
+        results = []
+        prodlist = []
+        username = request.POST.get('username')
+        similarity_thresh = request.POST.get('similarity_thresh')
+        n = int(request.POST.get('n'))
+        m = int(request.POST.get('m'))
+
+        # test_accuracy(n, m)
+    
+        try:
+            results = make_prediction(username, similarity_thresh, n, m) # list of [username, product, prediction]
+            for i in range(len(results)):
+                print("Predicted", results[i][0], "rating", results[i][1], "as", results[i][2])
+                #printout.append("Predicted {0} rating {1} as {2}".format(results[i][0], results[i][1], results[i][2]))
+                prodlist.append(results[i][1])
+            #return printout
+        except:
+            print("Not enough data to recommend user, loading top {m} items")
+            # Find products with the top m highest ratings
+            topm = Review.objects.values('product_name').annotate(Count('rating')).order_by('-rating__count')[:m]
+            for i in range(topm.count()):
+                print(topm)
+                prodlist.append(topm[i]['product_name'])
         
+        products = Product.objects.filter(name__in=prodlist)
+        # Calculate the average rating for each product
+        for i in range(len(products)):
+            product = products[i]
+            product.average_rating = Review.objects.filter(product_name=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+            try:
+                product.predicted_rating = results[i][2]
+            except:
+                product.predicted_rating = Review.objects.filter(product_name=product).aggregate(avg_rating=Avg('rating'))['avg_rating']
+        predict = "Predicted Rating: "
+        context = {
+            'seller': product.seller,
+            'products': products,
+            'predict': predict,
+        }
+        return render(request, 'main/seller_store.html', context)
+    
+    return render(request, 'main/seller_predict_buyer.html')
+
 @login_required(login_url="/login")
 @user_passes_test(is_customer, login_url="/home")
 def customer_feedback_view(request):

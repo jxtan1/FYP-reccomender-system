@@ -11,6 +11,11 @@
     >
     <title>{% block title %}FYP-23-S3-24{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+  <style>
+    table.prediction: {
+      empty-cells: hide;
+    }
+  </style>
 
   </head>
 
@@ -30,11 +35,17 @@
               <li class="nav-item">
                 <a class="nav-link" href="/import">Import Data</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/admin_force_gen">Generate Similarity Matrix</a>
+              </li>
               {% endif %}
               {% if user.account != "A" %}
                 {% if user.account == "B" %}
                 <li class="nav-item">
                   <a class="nav-link" href="/customer_feedback">Provide Feedback</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/buyer_recommendations">Recommendations</a>
                 </li>
                 {% endif %}
                 {% if user.account == "S" %}
@@ -42,6 +53,9 @@
                   <a class="nav-link" href="/add-product">Add Product</a>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'seller_products' %}">My Products</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'seller_predict_buyer' %}">Make Predictions</a>
                 </li>
                 </li>
                 <li class="nav-item">

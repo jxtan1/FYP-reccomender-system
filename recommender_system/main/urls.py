@@ -24,6 +24,12 @@ urlpatterns = [
     path('seller/<str:username>/store/', views.seller_store, name='seller_store'),
 
    ####
+
+    path('admin_force_gen/', views.admin_force_gen, name='admin_force_gen'),
+    path('buyer_recommendations/', views.buyer_recommendations, name='seller_store'),
+    path('seller_predict_buyer/', views.seller_predict_buyer, name='seller_predict_buyer'),
+
+   ####
    
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
 

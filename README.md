@@ -30,6 +30,12 @@ Team members -
 
  pip install pandas
 
+ pip install django-recaptcha
+
+ pip install scikit-learn
+
+ pip install django-pandas
+
 # Mac
 
  source macSource/myworld/bin/activate 
