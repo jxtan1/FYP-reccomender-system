@@ -98,23 +98,12 @@ class SellerFeedbackAdmin(admin.ModelAdmin):
         return False  # Disallow adding new feedback through the admin
 
 
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user')
-    search_fields = ('user__username',)  # Add fields you want to search by
-    readonly_fields = list_display
-
-    def has_add_permission(self, request):
-        return False  # Disallow adding new feedback through the admin
-
-
-
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_id', 'buyer', 'order_created_time', 'order_status')
-    search_fields = ('buyer__username',)  # Add fields you want to search by
+    search_fields = ('buyer__username', 'order_id')  # Add fields you want to search by
     readonly_fields = list_display
-    list_filter = ('buyer', 'order_created_time', 'order_status')
+    list_filter = ('order_created_time', 'order_status')
 
     def has_add_permission(self, request):
         return False  # Disallow adding new feedback through the admin

@@ -25,6 +25,9 @@
     {% endif %}
 </div>
 
+<h2>Description</h2>
+<p>{{ product.description }}</p>
+
 <br>
 <p>Average Rating: {{ average_rating|default:"No ratings yet"|floatformat:1  }}</p>
 
