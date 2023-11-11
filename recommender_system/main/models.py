@@ -47,7 +47,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     sold_count = models.IntegerField(default=0)
     seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username') # Retrieve from CustomUser account = 'Seller'
-    description = models.TextField(max_length=200)
+    description = models.TextField(max_length=1000)
     image = models.CharField(max_length=200)
 
     def __str__(self):

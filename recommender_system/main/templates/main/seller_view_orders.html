@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Customers' Orders{% endblock %}
+
+{% block content %}
+
+<h2>Your Customers' Orders (Latest on Top)</h2>
+
+{% if order_items %}
+    <ul>
+        {% for item in order_items %}
+            <li>
+                Order ID: {{ item.order }}<br>
+                <br>
+                {% if item.product.image %}
+                <img src="{{ item.product.image}}" alt="{{ item.product.name }}" style="max-width: 300px; max-height: 300px;">
+                {% else %}
+                <p>No Image Available</p>
+                {% endif %}
+                <br>
+
+                Product: <a href="{% url 'product_detail' item.product.product_id %}">{{ item.product.name }}</a> <br>
+                Quantity: {{ item.quantity }}    <br>       
+                Total Price: {{ item.price }}<br>
+                <p>Purchased by: {{ item.order.buyer }} on {{ item.order.order_created_time }} </p>
+                <p>Buyer's Address: {{ item.order.buyer.address }}</p>
+                Shipping Status: {{ item.order_status }}<br>
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No orders found.</p>
+{% endif %}
+
+{% endblock %}

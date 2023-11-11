@@ -589,3 +589,25 @@ def buyer_view_order_detail(request, order_id):
     order_items = order.orderitems.all()
 
     return render(request, 'main/buyer_view_order_detail.html', {'order': order, 'order_items': order_items})
+
+
+def seller_view_orders(request):
+    # Get all OrderItems for products sold by the current seller (request.user)
+    print("asdasdas")
+    order_items = OrderItem.objects.filter(product__seller=request.user)
+
+    # Retrieve the associated orders using the related name 'orderitems'
+    orders = [order_item.order for order_item in order_items]
+    for order in orders:
+        print (order.order_id)
+    return render(request, 'main/seller_view_orders.html', {'orders': orders, 'order_items': order_items})
+
+
+def seller_view_order_detail(request, order_id):
+    # Get the specific order or return a 404 page if not found
+    order = get_object_or_404(Order, order_id=order_id, buyer=request.user)
+
+    # Get the order items for the selected order
+    order_items = order.orderitems.all()
+
+    return render(request, 'main/buyer_view_order_detail.html', {'order': order, 'order_items': order_items})
