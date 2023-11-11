@@ -1,30 +1,36 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Checkout and Payment{% endblock %}
+{% block title %}Payment{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <h1>Payment</h1>
 
-{% block content %} 
-<h2 style="font-size: 24px; text-align: center; margin-bottom: 20px;">Checkout and Payment</h2>
+  <form method="post" action="{% url 'checkout' %}">
+    {% csrf_token %} {{form|crispy}}
+    <input type="hidden" name="total_price" value="{{ total_price }}">
+    <label for="card_number">Card Number:</label>
+    <input type="text" id="card_number" name="card_number" placeholder="Card Number" required>
 
-{% if cart.items.all %}
-  <p>Items in your cart:</p>
-  <ul>
-    {% for item in cart.items.all %}
-      <li>{{ item.name }} - ${{ item.price }}</li>
-    {% endfor %}
-  </ul>
+    <label for="expiration_date">Expiration Date (MM/YY):</label>
+    <input type="text" id="expiration_date" name="expiration_date" placeholder="MM/YY" required>
 
-  <p>Total Price: ${{ total_price }}</p>
+    <label for="cvv">CVV:</label>
+    <input type="text" id="cvv" name="cvv" placeholder="CVV" required>
 
-  <!-- Add a payment form or payment processing logic here -->
-  <!-- You can integrate a payment gateway or use a mock payment form for simulation -->
+    <label for="postal_code">Postal Code:</label>
+    <input type="text" id="postal_code" name="postal_code" placeholder="Postal Code" required>
 
-  <form method="post">
-    {% csrf_token %}
-    <!-- Payment form fields go here -->
-    <!-- Payment submit button -->
-    <button type="submit" class="btn btn-primary">Pay Now</button>
+    <label for="street_address1">Street Address 1:</label>
+    <input type="text" id="street_address1" name="street_address1" placeholder="Street Address 1" required>
+
+    <label for="street_address2">Street Address 2:</label>
+    <input type="text" id="street_address2" name="street_address2" placeholder="Street Address 2">
+
+    <label for="unit_number">Unit Number:</label>
+    <input type="text" id="unit_number" name="unit_number" placeholder="Unit Number">
+
+    <button type="submit" class="btn btn-primary">Submit Payment</button>
   </form>
-{% else %}
-  <p>Your cart is empty. Please add items to your cart first.</p>
-{% endif %}
+</div>
+
 {% endblock %}

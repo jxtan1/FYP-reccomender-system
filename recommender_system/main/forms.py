@@ -6,7 +6,8 @@ from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
-
+from django import forms
+from .models import Review
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required = True)
@@ -36,16 +37,23 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'gender', 'account', 'password1', 'password2']
+        fields = ['username', 'email', 'first_name', 'last_name', 'gender', 'account', 'password1', 'password2', 'phone_number', 'address']
 
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['username'].help_text = '<p class="form-text custom-help-text">' + self.fields['username'].help_text + '</p>'
+        self.fields['password1'].help_text = '<p class="form-text custom-help-text">' + self.fields['password1'].help_text + '</p>'
+        self.fields['password2'].help_text = '<p class="form-text custom-help-text">' + self.fields['password2'].help_text + '</p>'
 
 
 
 class UserProfileEditForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        model = CustomUser
+        fields = ['username', 'first_name', 'last_name', 'email','phone_number', 'address']
         
     
     
@@ -82,3 +90,17 @@ class SellerFeedbackForm(forms.ModelForm):
         ]
 
 
+class PaymentForm(forms.Form):
+    postal_code = forms.CharField(label='Postal Code', required=True)
+    street_address1 = forms.CharField(label='Street Address 1', required=True)
+    street_address2 = forms.CharField(label='Street Address 2', required=False)
+    unit_number = forms.CharField(label='Unit Number', required=False)
+
+
+
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']

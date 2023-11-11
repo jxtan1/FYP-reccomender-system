@@ -6,6 +6,8 @@
         <p><strong>Username:</strong> {{ user.username }}</p>
         <p><strong>Name:</strong> {{ user.first_name|default:"" }} {{ user.last_name|default:"" }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone Number:</strong> {{ user.phone_number|default:"" }}</p>
+        <p><strong>Address:</strong> {{ user.address|default:"" }}</p>
         
         <!-- Add more user profile fields as needed -->
 

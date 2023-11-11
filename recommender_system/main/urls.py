@@ -24,18 +24,23 @@ urlpatterns = [
     path('seller/<str:username>/store/', views.seller_store, name='seller_store'),
 
    ####
-
+   
     path('admin_force_gen/', views.admin_force_gen, name='admin_force_gen'),
     path('buyer_recommendations/', views.buyer_recommendations, name='seller_store'),
     path('seller_predict_buyer/', views.seller_predict_buyer, name='seller_predict_buyer'),
 
    ####
-   
-    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
 
-    path('cart/', views.cart_view, name='cart'),
+    path('add_to_cart/<int:product_id>', views.add_to_cart, name='add_to_cart'),
+    path('cart', views.cart, name='cart'),
     path('remove_from_cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
-    path('checkout/', views.checkout, name='checkout'),
+    path('clear_cart/', views.clear_cart, name='clear_cart'),
+    path('checkout', views.checkout, name='checkout'),
+    path('review_success/<int:product_id>', views.review_success, name='review_success'),
+    path('view_orders', views.buyer_view_orders, name='buyer_view_orders'),
+    path('order_detail/<uuid:order_id>/', views.buyer_view_order_detail, name='order_detail'),
+
+
 ]
 
 

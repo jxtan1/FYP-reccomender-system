@@ -3,7 +3,9 @@
 --         (124, "testing2", "testing2",1);
 
 
-SELECT * FROM main_product;
+
+
+--DELETE FROM main_review WHERE review_id > 21430;
 
 -- DELETE FROM main_product WHERE product_id > 100;
 

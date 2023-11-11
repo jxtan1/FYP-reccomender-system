@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Your Orders{% endblock %}
+
+{% block content %}
+
+<h2>Your Orders (Latest on Top)</h2>
+
+{% if orders %}
+    <ul>
+        {% for order in orders %}
+            <li>
+                Order ID: {{ order.order_id }}<br>
+                Order Status: {{ order.order_status }}<br>
+                Order Created Time: {{ order.order_created_time }}<br>
+                Total Price: ${{ order.total_price }}<br>
+                Number of Items: {{ order.num_of_items }}<br>
+                <a href="{% url 'order_detail' order.order_id %}">View Order Details</a>
+
+                <!-- Add more details or links as needed -->
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No orders found.</p>
+{% endif %}
+
+{% endblock %}

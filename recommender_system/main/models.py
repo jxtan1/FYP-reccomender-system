@@ -1,3 +1,4 @@
+import uuid
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
@@ -12,6 +13,8 @@ class CustomUser(AbstractUser):
         ('O', 'Other'),
     )
     gender = models.CharField(max_length=1, choices=gender_choices, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
 
 
     # Differentiates buyer and seller acounts
@@ -41,19 +44,15 @@ class CustomUser(AbstractUser):
 class Product(models.Model):
     product_id = models.AutoField(primary_key= True)
     name = models.CharField(max_length=200, unique=True)
-    price = models.CharField(max_length=200) # Keep as a string for now
-    sold_count = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    sold_count = models.IntegerField(default=0)
     seller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username') # Retrieve from CustomUser account = 'Seller'
     description = models.TextField(max_length=200)
     image = models.CharField(max_length=200)
 
-    #def __str__(self):
-    #    return str(self.product_id) + '\n' + self.name + '\n' + self.price + '\n' + str(self.sold_count) + str(self.seller) + self.description + self.image
+    def __str__(self):
+       return self.name
 
-# Model for customers who reviewed the scraped products
-# class Reviewer(models.Model):
-#     reviewer_id = models.AutoField(primary_key=True)
-#     username = models.CharField(max_length=200, unique=True)
 
 class Review(models.Model):
     RATING_CHOICES = [
@@ -69,6 +68,8 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES, default=0)
     username = models.ForeignKey(CustomUser, on_delete=models.CASCADE, to_field='username') # Retrieve from reviewer (CustomUser Account='B')
     comment = models.TextField()
+    
+    #created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class CustomerFeedback(models.Model):
@@ -143,8 +144,96 @@ class SellerFeedback(models.Model):
 
 
 
-
-
-
 class Cart(models.Model):
-    items = models.ManyToManyField(Product)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    user = models.ForeignKey(CustomUser,  on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return str(self.id)
+    
+    @property
+    def total_price(self):
+        cartitems = self.cartitems.all()
+        total = sum([item.price for item in cartitems])
+        return total
+    
+    @property
+    def num_of_items(self):
+        cartitems = self.cartitems.all()
+        quantity = sum([item.quantity for item in cartitems])
+        return quantity
+    
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='items')
+    cart = models.ForeignKey(Cart, on_delete= models.CASCADE, related_name="cartitems")
+    quantity = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.product.name
+    
+    @property
+    def price(self):
+        new_price = self.product.price * self.quantity
+        return new_price
+
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('Completed', 'Completed'),
+        ('Yet to be completed', 'Yet to be completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    order_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    buyer = models.ForeignKey(CustomUser,  on_delete=models.CASCADE)
+    order_created_time = models.DateTimeField(auto_now_add=True)
+    order_status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='Yet to be completed')
+
+    def __str__(self):
+        return str(self.order_id)
+    
+    @property
+    def total_price(self):
+        cartitems = self.orderitems.all()
+        total = sum([item.price for item in cartitems])
+        return total
+    
+    @property
+    def num_of_items(self):
+        cartitems = self.orderitems.all()
+        quantity = sum([item.quantity for item in cartitems])
+        return quantity
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete= models.CASCADE, related_name="orderitems")
+    quantity = models.IntegerField(default=0)
+    
+    STATUS_CHOICES = [
+        ('To Ship', 'To Ship'),
+        ('To Receive', 'To Receive'),
+        ('Delivered', 'Delivered'),
+    ]
+
+    order_status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='To Ship')
+
+
+    def __str__(self):
+        return self.product.name
+    
+    @property
+    def price(self):
+        new_price = self.product.price * self.quantity
+        return new_price
+
+
+class Payment(models.Model):
+    order_id = models.ForeignKey(Order, on_delete= models.CASCADE, editable=False)
+    payment_time = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.order_id)
+    

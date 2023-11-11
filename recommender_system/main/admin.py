@@ -2,7 +2,7 @@ from typing import Any
 from django import forms
 from django.contrib import admin
 from django.db.models.query import QuerySet
-from .models import CustomerFeedback, SellerFeedback, Review, Product, CustomUser#, Reviewer 
+from .models import Cart, CartItem, CustomerFeedback, Order, OrderItem, Payment, SellerFeedback, Review, Product, CustomUser#, Reviewer 
 
 def get_all_fields(model):
     """
@@ -56,7 +56,7 @@ class CustomUserAdmin(admin.ModelAdmin):
             'description': 'Fields needed for login',
         }),
         ('User Info', {
-            'fields': ('first_name', 'last_name', 'gender', 'email'),
+            'fields': ('first_name', 'last_name', 'gender', 'email', 'phone_number','address'),
             'description': 'Personal info of users like name, gender, etc.',
         }),
         ('User Account Info', {
@@ -65,7 +65,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         }),
     )
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'gender', 'account', 'is_staff', 'is_active')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'gender', 'account','phone_number','address', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')  # Add fields you want to search by
     list_filter = ('is_active', 'account', 'is_staff', 'gender', 'date_joined', EmailFilter)
 
@@ -96,3 +96,37 @@ class SellerFeedbackAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False  # Disallow adding new feedback through the admin
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user')
+    search_fields = ('user__username',)  # Add fields you want to search by
+    readonly_fields = list_display
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
+
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('order_id', 'buyer', 'order_created_time', 'order_status')
+    search_fields = ('buyer__username',)  # Add fields you want to search by
+    readonly_fields = list_display
+    list_filter = ('buyer', 'order_created_time', 'order_status')
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('order_id', 'payment_time', 'completed')
+    search_fields = ('order_id',)  # Add fields you want to search by
+    readonly_fields = list_display
+    list_filter = ('payment_time', 'completed')
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new feedback through the admin
+

@@ -6,10 +6,15 @@
 <!-- detail.html -->
 <h1>{{ product.name }}</h1>
 <p>Price: <br>${{ product.price }} </p>
-<a href="{% url 'edit_account'%}">Add to Cart</a>
+{% if user.account == 'B' %}
+<a href="{% url 'add_to_cart' product.product_id%}">Add to Cart</a>
+{% endif %}
 <p>Sold by: <a href="{% url 'seller_store' seller.username %}">{{ seller.username }}</a></p>
 
 <p>Sold: {{ product.sold_count }}</p>
+
+
+
 
 
 <div class="product-image">
@@ -41,6 +46,15 @@
 <p><small>{{ total_ratings|default:"No ratings yet" }} ratings</small></p>
 
 <h2>Ratings and Reviews</h2>
+<!-- Review here -->
+{% if user.account == "B" %}    
+    <h2>Add a Review</h2>
+    <form method="post" action="{% url 'review_success' product_id=product.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Review</button>
+    </form>
+{% endif %}
 <ul>
     {% for review in reviews %}
     <div class="review" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
@@ -53,6 +67,7 @@
         <div class="username">
             <strong>Username:</strong> {{ review.username.username }}
         </div>
+
         <!-- You can add additional information from the review model here -->
     </div>
     {% empty %}
