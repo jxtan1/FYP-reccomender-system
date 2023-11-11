@@ -366,7 +366,7 @@ def buyer_recommendations(request):
     #gen_similarity_matrix() # Only if you want to regenerate matrix everytime recommendations are viewed
     prodlist = []
     try:
-        results = make_prediction() # list of [username, product, prediction]
+        results = make_prediction(request.user) # list of [username, product, prediction]
         for i in range(len(results)):
             print("Predicted", results[i][0], "rating", results[i][1], "as", results[i][2])
             #printout.append("Predicted {0} rating {1} as {2}".format(results[i][0], results[i][1], results[i][2]))
@@ -933,7 +933,7 @@ def buyer_recommendations(request):
     #gen_similarity_matrix() # Only if you want to regenerate matrix everytime recommendations are viewed
     prodlist = []
     try:
-        results = make_prediction() # list of [username, product, prediction]
+        results = make_prediction(request.user) # list of [username, product, prediction]
         for i in range(len(results)):
             print("Predicted", results[i][0], "rating", results[i][1], "as", results[i][2])
             #printout.append("Predicted {0} rating {1} as {2}".format(results[i][0], results[i][1], results[i][2]))
