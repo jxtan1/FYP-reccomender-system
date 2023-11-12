@@ -14,11 +14,19 @@
 
 <hr>
 
+
 {% if order_items %}
     <h3>Order Items</h3>
+    <!-- Filter buttons -->
+    <div id="filter-buttons">
+        <button onclick="filterOrders('all')">All Orders</button>
+        <button onclick="filterOrders('to_ship')">To Ship</button>
+        <button onclick="filterOrders('to_receive')">To Receive</button>
+        <button onclick="filterOrders('delivered')">Delivered</button>
+    </div>
     <ul>
         {% for order_item in order_items %}
-            <li>
+            <li class="order-item {% if item.order_status == 'To Ship' %}to-ship{% elif item.order_status == 'To Receive' %}to-receive{% elif item.order_status == 'Delivered' %}delivered{% endif %}">
                 <a href="{% url 'product_detail' order_item.product.product_id %}">{{ order_item.product.name }}</a>
                 <br>
                 {% if order_item.product.image %}
@@ -30,6 +38,17 @@
                 <p>Sold by: <a href="{% url 'seller_store' order_item.product.seller %}">{{ order_item.product.seller }}</a></p>
                 Quantity: {{ order_item.quantity }}<br>
                 Price: ${{ order_item.price }}<br>
+                Shipping Status: {{ order_item.order_status }}<br>
+
+
+                {% if order_item.order_status != "Delivered" %}
+                <form method="post" action="{% url 'mark_received' order_item.order %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ order_item.product.product_id }}">
+
+                    <button type="submit">I received this product</button>
+                </form>
+                {% endif %}
             </li>
             <hr>
         {% endfor %}
@@ -37,7 +56,34 @@
 {% else %}
     <p>No items found for this order.</p>
 {% endif %}
+<p id="no-orders-message" style="display: none;">No items found for the selected category.</p>
 
 <a href="{% url 'buyer_view_orders' %}">Back to Your Orders</a>
+
+
+<script>
+    function filterOrders(status) {
+    var orderItems = document.getElementsByClassName('order-item');
+
+    for (var i = 0; i < orderItems.length; i++) {
+        var orderItem = orderItems[i];
+        var itemStatus = orderItem.classList.contains('to-ship') ? 'to_ship' : (orderItem.classList.contains('to-receive') ? 'to_receive' : 'delivered');
+
+        if (status === 'all' || itemStatus === status) {
+            orderItem.style.display = 'block';
+        } else {
+            orderItem.style.display = 'none';
+        }
+    }
+
+    // Show message when there are no orders for the selected category
+    var noOrdersMessage = document.getElementById('no-orders-message');
+    if (noOrdersMessage) {
+        var visibleOrders = Array.from(orderItems).filter(item => item.style.display === 'block');
+        noOrdersMessage.style.display = visibleOrders.length > 0 ? 'none' : 'block';
+    }
+}
+</script>
+
 
 {% endblock %}

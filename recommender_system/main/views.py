@@ -509,7 +509,8 @@ def add_to_cart(request, product_id):
     context = update_cart(request)
     return render(request, 'main/cart.html', context)
 
-
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
 def remove_from_cart(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -528,6 +529,8 @@ def remove_from_cart(request, product_id):
     return render(request, 'main/cart.html', context)
 
 
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
 def clear_cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart.delete()
@@ -536,6 +539,8 @@ def clear_cart(request):
     return render(request, 'main/cart.html', context)
 
 
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
 def checkout(request):
     if request.method == 'POST':
         payment_form = PaymentForm(request.POST)
@@ -575,12 +580,16 @@ def review_success(request, product_id):
     return render(request, 'main/review_success.html', {'product': product})
 
 
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
 def buyer_view_orders(request):
     # Get all orders for the current user
     orders = Order.objects.filter(buyer=request.user).order_by('-order_created_time')
     return render(request, 'main/buyer_view_orders.html', {'orders': orders})
 
 
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
 def buyer_view_order_detail(request, order_id):
     # Get the specific order or return a 404 page if not found
     order = get_object_or_404(Order, order_id=order_id, buyer=request.user)
@@ -591,23 +600,65 @@ def buyer_view_order_detail(request, order_id):
     return render(request, 'main/buyer_view_order_detail.html', {'order': order, 'order_items': order_items})
 
 
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
 def seller_view_orders(request):
     # Get all OrderItems for products sold by the current seller (request.user)
-    print("asdasdas")
     order_items = OrderItem.objects.filter(product__seller=request.user)
+
+    # Sort order items by the associated order's creation time in descending order
+    order_items = order_items.order_by('-order__order_created_time')
 
     # Retrieve the associated orders using the related name 'orderitems'
     orders = [order_item.order for order_item in order_items]
-    for order in orders:
-        print (order.order_id)
+
     return render(request, 'main/seller_view_orders.html', {'orders': orders, 'order_items': order_items})
 
 
-def seller_view_order_detail(request, order_id):
-    # Get the specific order or return a 404 page if not found
-    order = get_object_or_404(Order, order_id=order_id, buyer=request.user)
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
+def update_shipping_status(request, order_id):
+    # Retrieve product_id from the form submission
+    product_id = request.POST.get('product_id', '')
+    order_item = get_object_or_404(OrderItem, order__order_id=order_id, product__product_id=product_id)
+    print(order_item)
+    if request.method == 'POST':
+        new_status = request.POST.get('shipping_status', '')
+        
+        order_item.order_status = new_status
+        order_item.save()
+        messages.success(request, 'The product shipping status has been updated successfully')
 
-    # Get the order items for the selected order
-    order_items = order.orderitems.all()
+    # Redirect back to the seller's orders page after updating the status
+    return redirect('seller_view_orders')
 
-    return render(request, 'main/buyer_view_order_detail.html', {'order': order, 'order_items': order_items})
+
+@login_required(login_url="/login")
+@user_passes_test(is_customer, login_url="/home")
+def mark_received(request, order_id):
+    product_id = request.POST.get('product_id', '')
+    order_item = get_object_or_404(OrderItem, order__order_id=order_id, product__product_id=product_id)
+
+    # Check if the order item belongs to the current buyer
+    if order_item.order.buyer == request.user:
+        # Update the received status
+        order_item.order_status = 'Delivered'
+        order_item.save()
+        # Increment the sold count after the product has been delivered to buyer
+        product = get_object_or_404(Product, pk=product_id)
+        product.sold_count += 1
+        product.save()
+
+        # Update the order status to 'Completed'
+        order = get_object_or_404(Order, order_id=order_id, buyer=request.user)
+
+        # Check if all order items in the order are received
+        if order.orderitems.exclude(order_status='Delivered').count() == 0:
+            # If all items are received, update the order status to 'completed'
+            order.order_status = 'Completed'
+            order.save()
+
+    # Construct the URL for the order_detail page
+    order_detail_url = reverse('order_detail', args=[str(order_id)])
+
+    return redirect(order_detail_url)

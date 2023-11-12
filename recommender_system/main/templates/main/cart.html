@@ -169,12 +169,12 @@
           <button onclick="removeItem('{{ item.product.product_id }}')">X</button>
       </div>
     </div>
-    <button class="clear-cart-button" onclick="clearCart()">Clear Cart</button>
     {% empty %}
     <p>Oops, your shopping cart is empty</p>
     {% endfor %}
 
   </div>
+  <button class="clear-cart-button" onclick="clearCart()">Clear Cart</button>
 
   <div class="pay-section">
     <h3>Grand-Total: ${{cart.total_price}}</h3>
@@ -203,6 +203,20 @@
           window.location.href = "/clear_cart/";
       }
   }
+
+      // Function to toggle visibility of the "Clear Cart" button
+      function toggleClearCartButton() {
+        var clearCartButton = document.querySelector('.clear-cart-button');
+
+        // Check if the cart is empty
+        var isCartEmpty = {{ items|length }} === 0;
+
+        // Toggle the button's display property based on cart emptiness
+        clearCartButton.style.display = isCartEmpty ? 'none' : 'block';
+    }
+
+    // Call the function when the page loads
+    window.onload = toggleClearCartButton;
 
 </script>
 
