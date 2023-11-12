@@ -42,7 +42,7 @@ urlpatterns = [
 
     path('order_detail/<uuid:order_id>/', views.buyer_view_order_detail, name='order_detail'),
     path('order_detail/<uuid:order_id>/', views.seller_view_order_detail, name='s_order_detail'),
-
+   
 
 ]
 

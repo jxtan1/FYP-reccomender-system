@@ -50,6 +50,9 @@ class EmailFilter(admin.SimpleListFilter):
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
 
+
+    
+
     fieldsets = (
         ('User Account Credentials', {
             'fields': ('username', 'password',),
@@ -68,6 +71,9 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'gender', 'account','phone_number','address', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')  # Add fields you want to search by
     list_filter = ('is_active', 'account', 'is_staff', 'gender', 'date_joined', EmailFilter)
+
+    def has_add_permission(self, request):
+        return False  # Disallow adding new user through admin
 
 # @admin.register(Reviewer)
 # class ReviewerAdmin(admin.ModelAdmin):
@@ -118,4 +124,5 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False  # Disallow adding new feedback through the admin
+
 
