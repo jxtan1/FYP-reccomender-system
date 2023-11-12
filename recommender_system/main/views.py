@@ -132,6 +132,21 @@ def delete_product(request, product_id):
 
     return render(request, 'main/delete_product_confirm.html', {'product': product})
 
+def has_bought(user, product_id):
+    # Check if the user has bought the product
+    has_bought = OrderItem.objects.filter(
+        Q(order__buyer=user) & Q(product__product_id=product_id)
+    ).exists()
+    return has_bought 
+
+
+def has_rated(user, product_id):
+    # Check if the user has already rated the product
+    has_rated = Review.objects.filter(
+        Q(username=user) & Q(product_name__product_id=product_id)
+    ).exists()
+
+    return has_rated
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -154,27 +169,14 @@ def product_detail(request, product_id):
     # Get the Page object for the current page of reviews
     reviews = paginator.get_page(page)
 
-    # Review form handling
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.product_name = product
-            review.username = request.user  # Assuming you are using Django authentication
-            review.save()
-            # Redirect to the success page
-            return redirect('review_success', product_id=product_id)
-    else:
-        form = ReviewForm()
-
     context = {
         'product': product,
         'reviews': reviews,
         'average_rating': average_rating,
         'total_ratings': total_ratings,
         'seller': product.seller,
-        'form': form,  # Add the form to the context
     }
+
     return render(request, 'main/product_detail.html', context)
 
 
@@ -588,6 +590,26 @@ def buyer_view_orders(request):
     return render(request, 'main/buyer_view_orders.html', {'orders': orders})
 
 
+# @login_required(login_url="/login")
+# @user_passes_test(is_customer, login_url="/home")
+# def buyer_view_order_detail(request, order_id):
+#     # Get the specific order or return a 404 page if not found
+#     order = get_object_or_404(Order, order_id=order_id, buyer=request.user)
+
+#     # Get the order items for the selected order
+#     order_items = order.orderitems.all()
+#     context = {
+#         'order': order,
+#         'order_items': order_items
+#     }
+#     #order_item = get_object_or_404(OrderItem, order__order_id=order_id, product__product_id=product_id)
+
+#     # # Check if the current user has bought the product
+#     # context['has_bought'] = has_bought(request.user, product_id)
+#     # context['has_rated'] = has_rated(request.user, product_id)
+#     return render(request, 'main/buyer_view_order_detail.html', context)
+
+
 @login_required(login_url="/login")
 @user_passes_test(is_customer, login_url="/home")
 def buyer_view_order_detail(request, order_id):
@@ -597,7 +619,45 @@ def buyer_view_order_detail(request, order_id):
     # Get the order items for the selected order
     order_items = order.orderitems.all()
 
-    return render(request, 'main/buyer_view_order_detail.html', {'order': order, 'order_items': order_items})
+    # Create a list to store whether the buyer has bought and rated each product
+    product_info = []
+
+    # Iterate over the order items to check if the buyer has bought and rated each product
+    for order_item in order_items:
+        product_id = order_item.product.product_id
+        has_bought_product = has_bought(request.user, product_id)
+        has_rated_product = has_rated(request.user, product_id)
+        
+        product_info.append({
+            'product_id': product_id,
+            'has_bought': has_bought_product,
+            'has_rated': has_rated_product,
+        })
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'product_info': product_info,
+    }
+
+    return render(request, 'main/buyer_view_order_detail.html', context)
+
+
+def save_review(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Product, product_id=product_id)
+        rating = request.POST.get('rating')
+        review_comment = request.POST.get('review_comment')
+
+        Review.objects.create(
+                    product_name=product,
+                    rating=rating,
+                    username=request.user,
+                    comment=review_comment
+                )
+
+    return render(request, 'main/review_success.html')
 
 
 @login_required(login_url="/login")

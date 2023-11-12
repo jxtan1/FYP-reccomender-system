@@ -44,6 +44,7 @@ urlpatterns = [
     #path('order_detail/<uuid:order_id>/', views.seller_view_order_detail, name='s_order_detail'),
     path('update_shipping_status/<str:order_id>/', views.update_shipping_status, name='update_shipping_status'),
     path('mark_received/<str:order_id>/', views.mark_received, name='mark_received'),
+    path('save_review', views.save_review, name='save_review'),
 
 ]
 

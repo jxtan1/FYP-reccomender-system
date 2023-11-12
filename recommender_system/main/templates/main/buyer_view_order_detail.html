@@ -48,6 +48,39 @@
 
                     <button type="submit">I received this product</button>
                 </form>
+                {% else %}
+                    {% for product_info_item in product_info %}
+                        {% if product_info_item.product_id == order_item.product.product_id %}
+                            {% if product_info_item.has_bought %}
+                                {% if not product_info_item.has_rated %}    
+                                <h2>Add a Review</h2>
+                                <form method="post" action="{% url 'save_review' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ order_item.product.product_id }}">
+                                    
+                                    <label for="rating">Rating:</label>
+                                    <select name="rating" id="rating">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <br>
+                                    <label for="review_comment">Review Comment:</label>
+                                    <textarea name="review_comment" id="review_comment" rows="4" cols="50"></textarea>
+                            
+                                    {{ form.as_p }}
+                                    <button type="submit">Submit Review</button>
+                                </form>
+
+                                {% else %}
+                                <p> You have rated this product!</p>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </li>
             <hr>
