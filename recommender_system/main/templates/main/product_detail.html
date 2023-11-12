@@ -101,6 +101,15 @@
       <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
         <div class="card-body">
             <ul>
+              <!-- Review here -->
+{% if user.account == "B" %}    
+<h2>Add a Review</h2>
+<form method="post" action="{% url 'review_success' product_id=product.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Review</button>
+</form>
+{% endif %}
                 {% for review in reviews %}
                 <div class="review" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
                     <div class="rating">
