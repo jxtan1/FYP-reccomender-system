@@ -39,6 +39,7 @@ urlpatterns = [
     path('review_success/<int:product_id>', views.review_success, name='review_success'),
     path('view_orders', views.buyer_view_orders, name='buyer_view_orders'),
     path('s_view_orders', views.seller_view_orders, name='seller_view_orders'),
+    path('seller_create_report', views.seller_create_report, name='seller_create_report'),
 
     path('order_detail/<uuid:order_id>/', views.buyer_view_order_detail, name='order_detail'),
     #path('order_detail/<uuid:order_id>/', views.seller_view_order_detail, name='s_order_detail'),

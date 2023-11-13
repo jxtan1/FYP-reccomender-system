@@ -100,6 +100,9 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'seller_view_orders' %}">View Orders by Customer</a>
                 </li>
+                <li class="nav_item">
+                  <a class="nav-link" href="{% url 'seller_create_report' %}">Create Report</a>
+                </li>
                 {% endif %}
                 {% if user.account == "B" %}
                 <li class="nav-item">

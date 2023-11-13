@@ -693,6 +693,20 @@ def update_shipping_status(request, order_id):
     # Redirect back to the seller's orders page after updating the status
     return redirect('seller_view_orders')
 
+import json
+
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
+def seller_create_report(request):
+    df = read_frame(Review.objects.all(), ['product_name', 'rating', 'username', 'comment'], verbose=False)
+    
+    # parsing the DataFrame in json format. 
+    json_records = df.reset_index().to_json(orient ='records') 
+    data = [] 
+    data = json.loads(json_records) 
+    context = {'d': data} 
+  
+    return render(request, 'main/seller_create_report.html', context)
 
 @login_required(login_url="/login")
 @user_passes_test(is_customer, login_url="/home")
