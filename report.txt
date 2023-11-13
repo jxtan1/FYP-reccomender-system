@@ -1,15 +1,15 @@
 Top 10 Products
-                                                                                                                   product_name  rating_counts  rating_max
-15                                                                                                          Apple iPhone 14 Pro            933           5
-16                                                                                                      Apple iPhone 14 Pro Max            910           5
-13                                                                                                              Apple iPhone 14            622           5
-409                                 Xiaomi Redmi Note 12 4G 256GB or 128GB / Global Version (FREE : TEMPERED GLASS + BACK CASE)            557           5
-246                    Samsung Galaxy A54 5G 256GB or 128GB | 1 Year Local Samsung Warranty (FREE : TEMPERED GLASS + BACK CASE)            435           5
-387  Xiaomi Redmi 10 5G 128GB ROM + 6GB RAM (Global Version) (1 Year Local Xiaomi Warranty) (FREE : TEMPERED GLASS + BACK CASE)            416           5
-14                                                                                                         Apple iPhone 14 Plus            376           5
-305                                                                      Samsung Galaxy S23 Ultra 5G-Samsung SG 1 Year Warranty            324           5
-219                                              Samsung Galaxy A23 LTE 128GB Rom + 6GB Ram (FREE : TEMPERED GLASS + BACK CASE)            244           5
-227               Samsung Galaxy A34 5G 128GB Rom + 8GB Ram / 1 Year Local Samsung Warranty (FREE : TEMPERED GLASS + BACK CASE)            230           5
+                                          product_name  rating_counts  rating_max
+15                                 Apple iPhone 14 Pro            933           5
+16                             Apple iPhone 14 Pro Max            910           5
+13                                     Apple iPhone 14            622           5
+409  Xiaomi Redmi Note 12 4G 256GB or 128GB / Globa...            557           5
+246  Samsung Galaxy A54 5G 256GB or 128GB | 1 Year ...            435           5
+387  Xiaomi Redmi 10 5G 128GB ROM + 6GB RAM (Global...            416           5
+14                                Apple iPhone 14 Plus            376           5
+305  Samsung Galaxy S23 Ultra 5G-Samsung SG 1 Year ...            324           5
+219  Samsung Galaxy A23 LTE 128GB Rom + 6GB Ram (FR...            244           5
+227  Samsung Galaxy A34 5G 128GB Rom + 8GB Ram / 1 ...            230           5
 
 Top 10 Reviewers
      username  rating_counts  min_rating  max_rating  avg_rating

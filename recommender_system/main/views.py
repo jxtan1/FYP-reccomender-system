@@ -713,7 +713,7 @@ def seller_create_report(request):
         # Generating report file...
         rptfile = open("report.txt", "w", encoding="utf-8")
         rptfile.write("Top {0} Products\n".format(n))
-        rptfile.write(top_n_products.to_string() + "\n")
+        rptfile.write(str(top_n_products) + "\n") # Did not use to_string as some product names are so long it blocks the values
         rptfile.write("\nTop {0} Reviewers\n".format(m))
         rptfile.write(top_m_reviewers.to_string() + "\n")
         rptfile.write("\nProduct name keywords\n")
