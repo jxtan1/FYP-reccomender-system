@@ -33,7 +33,7 @@
                 Quantity: {{ item.quantity }}    <br>       
                 Total Price: ${{ item.price }}<br>
                 <p>Purchased by: {{ item.order.buyer }} on {{ item.order.order_created_time }} </p>
-                <p>Buyer's Address: {{ item.order.buyer.address }}</p>
+                <p>Buyer's Address: {{ item.order.delivery_address }}</p>
                 <p>Shipping Status: {{ item.order_status }}</p>
 
                 <!-- Button to toggle the form visibility -->

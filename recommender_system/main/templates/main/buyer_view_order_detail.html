@@ -11,7 +11,7 @@
 <p>Order Created Time: {{ order.order_created_time }}</p>
 <p>Total Price: ${{ order.total_price }}</p>
 <p>Number of Items: {{ order.num_of_items }}</p>
-
+<p>Delivery Address: {{ order.delivery_address }}</p>
 <hr>
 
 
@@ -46,6 +46,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="product_id" value="{{ order_item.product.product_id }}">
 
+                    <p><strong>Please ensure you have really obtained the product before you click the button below!!!</strong></p>
                     <button type="submit">I received this product</button>
                 </form>
                 {% else %}

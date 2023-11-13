@@ -169,6 +169,10 @@
           <button onclick="removeItem('{{ item.product.product_id }}')">X</button>
       </div>
     </div>
+    <div class="pay-section">
+      <h3>Grand-Total: ${{cart.total_price}}</h3>
+      <button onclick = redirectToCheckout() >Pay</button>
+    </div>
     {% empty %}
     <p>Oops, your shopping cart is empty</p>
     {% endfor %}
@@ -176,10 +180,7 @@
   </div>
   <button class="clear-cart-button" onclick="clearCart()">Clear Cart</button>
 
-  <div class="pay-section">
-    <h3>Grand-Total: ${{cart.total_price}}</h3>
-    <button onclick = redirectToCheckout() >Pay</button>
-  </div>
+
 </div>
 
 
@@ -194,8 +195,10 @@
   }
 
   function redirectToCheckout() {
+    // Get the total price
+    var totalPrice = {{ cart.total_price }};
     // Redirect to the checkout page
-    window.location.href = "{% url 'checkout' %}";
+    window.location.href = `{% url 'checkout' %}?total_price=${totalPrice}`;
   }
 
   function clearCart() {

@@ -36,7 +36,6 @@
 
 <a class="btn btn-primary btn-lg float-right mr-md-5" href="{% url 'add_to_cart' product.product_id%}" role="button">Add to cart</a>
 
-<a class="btn btn-success btn-lg float-right mr-md-3" href="{% url 'edit_account'%}" role="button">Buy</a>
 {% endif %}
 
 <p>Sold by: <a class="font-weight-bold" href="{% url 'seller_store' seller.username %}">{{ seller.username }}</a></p>
@@ -85,7 +84,8 @@
   <br>
 </div>
 <br>
-  
+
+
   <div class="accordion" id="accordionExample">
     <div class="card">
       <div class="card-header" id="headingOne">
@@ -150,10 +150,6 @@
     
     
   </div>
-
-
-
-
 
 {% endblock %}
 
