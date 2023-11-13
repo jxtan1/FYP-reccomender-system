@@ -189,6 +189,7 @@ class Order(models.Model):
     buyer = models.ForeignKey(CustomUser,  on_delete=models.CASCADE)
     order_created_time = models.DateTimeField(auto_now_add=True)
     order_status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='Yet to be completed')
+    delivery_address = models.CharField(max_length=200)
 
     def __str__(self):
         return str(self.order_id)

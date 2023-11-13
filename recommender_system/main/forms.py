@@ -91,10 +91,8 @@ class SellerFeedbackForm(forms.ModelForm):
 
 
 class PaymentForm(forms.Form):
-    postal_code = forms.CharField(label='Postal Code', required=True)
-    street_address1 = forms.CharField(label='Street Address 1', required=True)
-    street_address2 = forms.CharField(label='Street Address 2', required=False)
-    unit_number = forms.CharField(label='Unit Number', required=False)
+    delivery_address = forms.CharField(max_length=200)
+
 
 
 

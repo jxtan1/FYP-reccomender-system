@@ -545,36 +545,34 @@ def clear_cart(request):
 @login_required(login_url="/login")
 @user_passes_test(is_customer, login_url="/home")
 def checkout(request):
+    total_price = request.GET.get('total_price', 0)
+    context = {'payment_form': PaymentForm(), 'total_price': total_price}
     if request.method == 'POST':
-        payment_form = PaymentForm(request.POST)
+        address = request.POST.get('hiddenAddress', '')  # Retrieve the delivery address
 
-        if payment_form.is_valid():
-            # Get or create the user's cart
-            cart, created = Cart.objects.get_or_create(user=request.user)
+        # Get or create the user's cart
+        cart, created = Cart.objects.get_or_create(user=request.user)
 
-            # Create an Order
-            order = Order.objects.create(buyer=request.user)
+        # Create an Order
+        order = Order.objects.create(buyer=request.user, delivery_address=address)
 
-            # Create OrderItems from CartItems
-            for cart_item in cart.cartitems.all():
-                OrderItem.objects.create(
-                    product=cart_item.product,
-                    order=order,
-                    quantity=cart_item.quantity
-                )
-
-            # Clear the cart
-            cart.delete()
-
-            # Create a Payment
-            payment = Payment.objects.create(order_id=order, completed=True)
-
-            return render(request, 'main/payment_success.html', {'order': order, 'payment': payment})
+        # Create OrderItems from CartItems
+        for cart_item in cart.cartitems.all():
+            OrderItem.objects.create(
+                product=cart_item.product,
+                order=order,
+                quantity=cart_item.quantity
+            )
+        # Clear the cart
+        cart.delete()
+        # Create a Payment
+        payment = Payment.objects.create(order_id=order, completed=True)
+        return render(request, 'main/payment_success.html', {'order': order, 'payment': payment})
 
     else:
         payment_form = PaymentForm()
 
-    context = {'payment_form': payment_form}
+    context = {'payment_form': PaymentForm(), 'total_price': total_price}
     return render(request, 'main/payment.html', context)
 
 

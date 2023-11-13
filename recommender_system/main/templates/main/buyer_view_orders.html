@@ -21,6 +21,7 @@
                 Order Created Time: {{ order.order_created_time }}<br>
                 Total Price: ${{ order.total_price }}<br>
                 Number of Items: {{ order.num_of_items }}<br>
+                Delivery Address: {{ order.delivery_address }}<br>
                 <a href="{% url 'order_detail' order.order_id %}">View Order Details</a>
 
                 <!-- Add more details or links as needed -->
