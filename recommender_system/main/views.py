@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Avg, Count
 from django.views.generic import ListView
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import FileResponse, HttpResponseRedirect
 
 from django.contrib.auth.views import PasswordChangeView
 from django.views.generic.base import TemplateView
@@ -737,6 +737,12 @@ def seller_create_report(request):
     context = {'d': data} 
   
     return render(request, 'main/seller_create_report.html', context)
+
+@login_required(login_url="/login")
+@user_passes_test(is_seller, login_url="/home")
+def seller_download_report(request):
+    response = FileResponse(open("report.txt", "rb"))
+    return response
 
 @login_required(login_url="/login")
 @user_passes_test(is_customer, login_url="/home")
