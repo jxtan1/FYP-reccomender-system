@@ -386,7 +386,7 @@ def seller_predict_buyer(request):
         results = []
         prodlist = []
         username = request.POST.get('username')
-        similarity_thresh = request.POST.get('similarity_thresh')
+        similarity_thresh = float(request.POST.get('similarity_thresh'))
         n = int(request.POST.get('n'))
         m = int(request.POST.get('m'))
 
@@ -399,7 +399,8 @@ def seller_predict_buyer(request):
                 #printout.append("Predicted {0} rating {1} as {2}".format(results[i][0], results[i][1], results[i][2]))
                 prodlist.append(results[i][1])
             #return printout
-        except:
+        except Exception as e:
+            print(e)
             print("Not enough data to recommend user, loading top {m} items")
             # Find products with the top m highest ratings
             topm = Review.objects.values('product_name').annotate(Count('rating')).order_by('-rating__count')[:m]
