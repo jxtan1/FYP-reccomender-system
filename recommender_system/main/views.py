@@ -696,6 +696,38 @@ import json
 @login_required(login_url="/login")
 @user_passes_test(is_seller, login_url="/home")
 def seller_create_report(request):
+    
+    if request.method == 'POST':
+        n = int(request.POST.get('n'))
+        priority = request.POST.get('priority')
+        top_n_products = top_products(n, priority)
+        m = int(request.POST.get('m'))
+        top_m_reviewers = top_reviewers(m)
+        
+        # print(top_n_products)
+        # print(top_m_reviewers)
+        # print(top_prodname_keywords(top_n_products))
+        # print(top_prodesc_keywwords(top_n_products))
+        # print(top_prodrev_keywords(top_n_products))
+        
+        # Generating report file...
+        rptfile = open("report.txt", "w", encoding="utf-8")
+        rptfile.write("Top {0} Products\n".format(n))
+        rptfile.write(top_n_products.to_string() + "\n")
+        rptfile.write("\nTop {0} Reviewers\n".format(m))
+        rptfile.write(top_m_reviewers.to_string() + "\n")
+        rptfile.write("\nProduct name keywords\n")
+        for key, value in top_prodname_keywords(top_n_products).items():  
+            rptfile.write('%s:%s\n' % (key, value))
+        rptfile.write("\nProduct description keywords\n")
+        for key, value in top_prodesc_keywwords(top_n_products).items():  
+            rptfile.write('%s:%s\n' % (key, value))
+        rptfile.write("\nProduct review keywords\n")
+        for key, value in top_prodrev_keywords(top_n_products).items():  
+            rptfile.write('%s:%s\n' % (key, value))
+        rptfile.close()
+    
+    # Render product review table
     df = read_frame(Review.objects.all(), ['product_name', 'rating', 'username', 'comment'], verbose=False)
     
     # parsing the DataFrame in json format. 

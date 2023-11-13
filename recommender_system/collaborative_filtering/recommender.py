@@ -1,4 +1,4 @@
-from main.models import Review
+from main.models import Product, Review
 
 import pandas as pd
 import numpy as np
@@ -194,3 +194,64 @@ def test_accuracy(n = 10, m = 10):
         if results[i][0] in user_list and results[i][1] in product_list:
             actual_rating = Review.objects.all.filter(product_name=results[i][1], username=results[i][0])[0].rating
             print("Predicted", results[i][0], "rating", results[i][1], "as", results[i][2], "vs actual rating of", actual_rating)
+            
+# Product Report
+# Top n products with highest rating and the most reviews (or the most reviews and the highest rating)
+def top_products(n = 10, priority = "rating"):
+
+    df = read_frame(Review.objects.all(), ['product_name', 'rating', 'username', 'comment'], verbose=False)
+    
+    df1 = df.groupby('product_name').agg(rating_counts = ('rating', 'count'), rating_max = ('rating', 'max')).reset_index().sort_values(by='rating_counts', ascending=False)
+    
+    if priority == "rating":
+        df1.sort_values(by=['rating_max', 'rating_counts'], ascending=False, inplace=True)
+    else:
+        df1.sort_values(by=['rating_counts', 'rating_max'], ascending=False, inplace=True)
+    
+    return df1.head(n)
+
+# Top m reviewers with the highest number of reviews and their average ratings given
+def top_reviewers(m = 10):
+    
+    df = read_frame(Review.objects.all(), ['product_name', 'rating', 'username', 'comment'], verbose=False)
+    
+    df1 = df.groupby('username').agg(rating_counts = ('rating', 'count'),
+                                     min_rating = ('rating', 'min'),
+                                     max_rating = ('rating', 'max'),
+                                     avg_rating = ('rating', 'mean')
+                                     ).reset_index().sort_values(by='rating_counts', ascending=False)
+    
+    return df1.head(m)
+
+# EXPERIMENTAL
+
+def word_count(str):
+    counts = dict()
+    words = str.split()
+    
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+    return counts
+
+# Top i keywords from top n product names
+def top_prodname_keywords(df):
+    namelist = df['product_name'].tolist()
+    keywords = " ".join(str(name) for name in namelist)
+    return word_count(keywords)
+
+# Top j keywords from top n product descriptions
+def top_prodesc_keywwords(df):
+    namelist = df['product_name'].tolist()
+    prodlist = Product.objects.filter(name__in=namelist)
+    keywords = " ".join(str(prod.description) for prod in prodlist)
+    return word_count(keywords)
+    
+# Top k keywords from top n product reviews
+def top_prodrev_keywords(df):
+    namelist = df['product_name'].tolist()
+    revlist = Review.objects.filter(product_name__in=namelist).exclude(comment="nan")
+    keywords = " ".join(str(rev.comment) for rev in revlist)
+    return word_count(keywords)

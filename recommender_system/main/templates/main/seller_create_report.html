@@ -4,6 +4,39 @@
 
 {% block content %}
 
+<div class="container">
+  <form method="post" enctype="multipart/form-data" class="row g-3">
+      {% csrf_token %}
+      <legend class="mb-4">Generate Report</legend>
+      <div class="col-md-6">
+          <div>
+              <label>
+                  No. of top products
+              </label>
+              <input type="number" min="0" id="n" name="n" value="10">
+          </div>
+          <div>
+              <label>
+                  Sort Priority
+              </label>
+              <select id="priority" name="priority">
+                <option value = "rating" selected>Highest Rating</option>
+                <option value = "rating_count">Greatest no. of Ratings</option>
+              </select>
+          </div>
+          <div>
+              <label>
+                  Top number of reviewers
+              </label>
+              <input type="number" min="0" id="m" name="m" value="10">
+          </div>
+      </div>
+      <div class="col-12">
+          <button type="submit" class="btn btn-primary">Generate</button>
+      </div>
+  </form>
+</div>
+
 <!DOCTYPE html> 
 <html lang="en"> 
 <head> 
