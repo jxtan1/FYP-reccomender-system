@@ -9,9 +9,14 @@
 <div class="mx-auto bg-light" style="width: 700px;">
     <br>
 
+{% include 'main/includes/messaging.html' %}
+
     <h2 style="font-size: 24px; text-align: center; margin-bottom: 20px;">User Profile</h2>
 
     <div class="mx-auto form-group" style="width: 600px;">
+
+
+
         <p><strong>Username:</strong> {{ user.username }}</p>
         <p><strong>Name:</strong> {{ user.first_name|default:"" }} {{ user.last_name|default:"" }}</p>
         <p><strong>Email:</strong> {{ user.email }}</p>
