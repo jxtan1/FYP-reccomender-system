@@ -11,7 +11,9 @@
     
   </head>
 
-<div class="container">
+  <br>
+
+  <div class="mx-auto form-group" style="width: 700px;">
     <form method="post" enctype="multipart/form-data" class="row g-3">
         {% csrf_token %}
         <legend class="mb-4">Import Excel Data</legend>
@@ -47,4 +49,5 @@
         document.getElementById('excel_file').value = ''; // Clear the file input
     }
 </script>
+<br>
 {% endblock %}
