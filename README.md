@@ -36,6 +36,8 @@ Team members -
 
  pip install django-pandas
 
+ pip install python-dotenv
+
 # Mac
 
  source macSource/myworld/bin/activate 
