@@ -38,6 +38,8 @@ Team members -
 
  pip install python-dotenv
 
+ pip install whitenoise
+
 # Mac
 
  source macSource/myworld/bin/activate 
